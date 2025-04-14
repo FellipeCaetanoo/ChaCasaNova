@@ -10,6 +10,8 @@
             --verde-claro: #a3b899;
             --fundo: #f5f5f5;
             --branco: #ffffff;
+            --bege: #e8e0d0;
+            --madeira: #c8a887;
         }
         
         body {
@@ -43,6 +45,54 @@
             font-size: 1.2rem;
             font-weight: 300;
             margin-bottom: 2rem;
+        }
+        
+        .theme-info {
+            background-color: var(--bege);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .theme-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--cinza);
+        }
+        
+        .color-palette {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-swatch span {
+            font-size: 0.8rem;
+            color: #444;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .theme-description {
+            font-size: 0.95rem;
+            max-width: 80%;
+            margin: 0 auto;
+            color: #555;
         }
         
         .card-grid {
@@ -164,6 +214,25 @@
         <header>
             <h1>Chá de Casa Nova - Luiza & Fellipe</h1>
             <div class="subtitle">Marque o item que você gostaria de levar para nossa nova casa</div>
+            
+            <div class="theme-info">
+                <div class="theme-title">Paleta de cores da nossa casa</div>
+                <div class="color-palette">
+                    <div class="color-swatch" style="background-color: #e8e0d0;">
+                        <span>Creme</span>
+                    </div>
+                    <div class="color-swatch" style="background-color: #d8cdb5;">
+                        <span>Bege</span>
+                    </div>
+                    <div class="color-swatch" style="background-color: #c8a887;">
+                        <span>Madeira</span>
+                    </div>
+                    <div class="color-swatch" style="background-color: #b6a284;">
+                        <span>Bambu</span>
+                    </div>
+                </div>
+                <p class="theme-description">Nossa casa terá uma decoração em tons neutros, com elementos em madeira e bambu, criando um ambiente acolhedor e natural. Presentes nestas cores combinarão perfeitamente com nosso estilo!</p>
+            </div>
         </header>
         
         <div class="card-grid">
