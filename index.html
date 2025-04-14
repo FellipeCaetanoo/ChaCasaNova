@@ -546,20 +546,91 @@
     </div>
     
     <script>
-        // Salvar estado dos checkboxes no localStorage
-        document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-            const itemId = checkbox.id;
+        // Firebase config e inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuração do Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyA-7JXIVKKWnirSxjjDUnQ1HMpjLQ2qO-Y",
+                authDomain: "cha-casa-nova-luiza-fellipe.firebaseapp.com",
+                projectId: "cha-casa-nova-luiza-fellipe",
+                storageBucket: "cha-casa-nova-luiza-fellipe.appspot.com",
+                messagingSenderId: "345678912345",
+                appId: "1:345678912345:web:a7b8c9d0e1f2g3h4i5j6k7"
+            };
             
-            // Recuperar estado salvo
-            if (localStorage.getItem(itemId) === 'true') {
-                checkbox.checked = true;
+            // Inicializar o Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            const itemsCollection = db.collection('items');
+            
+            // Função para atualizar os checkboxes baseado nos dados do Firestore
+            function updateCheckboxesFromFirestore() {
+                document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+                    const itemId = checkbox.id;
+                    
+                    // Buscar o estado do item no Firestore
+                    itemsCollection.doc(itemId).get().then((doc) => {
+                        if (doc.exists && doc.data().selected) {
+                            checkbox.checked = true;
+                            checkbox.disabled = true; // Opcional: desabilitar itens já escolhidos
+                        } else {
+                            checkbox.checked = false;
+                            checkbox.disabled = false;
+                        }
+                    }).catch((error) => {
+                        console.error("Erro ao obter documento:", error);
+                    });
+                });
             }
             
-            // Atualizar localStorage quando o checkbox mudar
-            checkbox.addEventListener('change', () => {
-                localStorage.setItem(itemId, checkbox.checked);
+            // Atualizar estado inicial dos checkboxes
+            updateCheckboxesFromFirestore();
+            
+            // Adicionar listeners para mudanças nos checkboxes
+            document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+                const itemId = checkbox.id;
+                
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        // Quando marcado, salvar no Firestore
+                        itemsCollection.doc(itemId).set({
+                            selected: true,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        }).then(() => {
+                            checkbox.disabled = true; // Opcional: desabilitar após seleção
+                        }).catch((error) => {
+                            console.error("Erro ao salvar no Firestore:", error);
+                            checkbox.checked = false;
+                        });
+                    } else {
+                        // Se desmarcado (isso não deve acontecer se estiver desabilitado)
+                        itemsCollection.doc(itemId).update({
+                            selected: false
+                        }).catch((error) => {
+                            console.error("Erro ao atualizar no Firestore:", error);
+                        });
+                    }
+                });
+            });
+            
+            // Atualizar em tempo real quando outras pessoas selecionarem itens
+            itemsCollection.onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "modified" || change.type === "added") {
+                        const itemId = change.doc.id;
+                        const checkbox = document.getElementById(itemId);
+                        if (checkbox && change.doc.data().selected) {
+                            checkbox.checked = true;
+                            checkbox.disabled = true; // Opcional: desabilitar itens já escolhidos
+                        }
+                    }
+                });
             });
         });
     </script>
+    
+    <!-- Importar Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </body>
 </html>
