@@ -642,7 +642,7 @@
     </div>
     
     <script>
-        // Firebase config e inicialização
+        // Adicionar o modal de confirmação ao DOM e inicializar Firebase
         document.addEventListener('DOMContentLoaded', function() {
             // Adicionar o modal de confirmação ao DOM
             const modalHTML = `
@@ -679,115 +679,94 @@
                 appId: "1:345678912345:web:a7b8c9d0e1f2g3h4i5j6k7"
             };
             
-            // Inicializar o Firebase
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
-            const itemsCollection = db.collection('items');
-            
-            // Função para atualizar a aparência do item baseado em seu estado
-            function updateItemAppearance(checkbox, isSelected) {
-                const card = checkbox.closest('.card');
-                const title = card.querySelector('.card-title');
-                const status = card.querySelector('.item-status');
-                const checkboxWrapper = card.querySelector('.checkbox-wrapper');
+            try {
+                // Inicializar o Firebase se ainda não estiver inicializado
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                const db = firebase.firestore();
+                const itemsCollection = db.collection('items');
                 
-                if (isSelected) {
-                    title.classList.add('selected');
-                    status.classList.add('selected');
-                    checkboxWrapper.style.display = 'none';
-                } else {
-                    title.classList.remove('selected');
-                    status.classList.remove('selected');
-                    checkboxWrapper.style.display = 'flex';
-                }
-            }
-            
-            // Adicionar elemento de status a cada card
-            document.querySelectorAll('.card').forEach(card => {
-                const cardContent = card.querySelector('.card-content');
-                const statusElement = document.createElement('div');
-                statusElement.classList.add('item-status');
-                statusElement.textContent = 'Item já escolhido';
-                cardContent.appendChild(statusElement);
-            });
-            
-            // Atualizar label dos checkboxes
-            document.querySelectorAll('.checkbox-label').forEach(label => {
-                label.textContent = 'Escolher item';
-            });
-            
-            // Função para atualizar os checkboxes baseado nos dados do Firestore
-            function updateCheckboxesFromFirestore() {
-                document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-                    const itemId = checkbox.id;
-                    
-                    // Buscar o estado do item no Firestore
-                    itemsCollection.doc(itemId).get().then((doc) => {
-                        if (doc.exists && doc.data().selected) {
-                            checkbox.checked = true;
-                            updateItemAppearance(checkbox, true);
-                        } else {
-                            checkbox.checked = false;
-                            updateItemAppearance(checkbox, false);
-                        }
-                    }).catch((error) => {
-                        console.error("Erro ao obter documento:", error);
-                    });
+                // Adicionar elemento de status a cada card
+                document.querySelectorAll('.card').forEach(card => {
+                    const cardContent = card.querySelector('.card-content');
+                    const statusElement = document.createElement('div');
+                    statusElement.classList.add('item-status');
+                    statusElement.textContent = 'Item já escolhido';
+                    cardContent.appendChild(statusElement);
                 });
-            }
-            
-            // Atualizar estado inicial dos checkboxes
-            updateCheckboxesFromFirestore();
-            
-            // Função para abrir o modal de confirmação
-            function openConfirmationModal(checkbox, itemName) {
-                currentCheckbox = checkbox;
-                currentItemName = itemName;
-                modalText.textContent = `Você optou por ${itemName}. Você confirma?`;
-                modalOverlay.classList.add('active');
-            }
-            
-            // Função para fechar o modal
-            function closeModal() {
-                modalOverlay.classList.remove('active');
-                if (currentCheckbox) {
-                    currentCheckbox.checked = false;
-                }
-                currentCheckbox = null;
-                currentItemName = '';
-            }
-            
-            // Confirmar seleção
-            confirmBtn.addEventListener('click', () => {
-                if (currentCheckbox) {
-                    const itemId = currentCheckbox.id;
+                
+                // Atualizar label dos checkboxes
+                document.querySelectorAll('.checkbox-label').forEach(label => {
+                    label.textContent = 'Escolher item';
+                });
+                
+                // Função para atualizar a aparência do item baseado em seu estado
+                function updateItemAppearance(checkbox, isSelected) {
+                    const card = checkbox.closest('.card');
+                    const title = card.querySelector('.card-title');
+                    const status = card.querySelector('.item-status');
+                    const checkboxWrapper = card.querySelector('.checkbox-wrapper');
                     
-                    // Salvar no Firestore
-                    itemsCollection.doc(itemId).set({
-                        selected: true,
-                        itemName: currentItemName,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(() => {
-                        updateItemAppearance(currentCheckbox, true);
-                        closeModal();
-                    }).catch((error) => {
-                        console.error("Erro ao salvar no Firestore:", error);
-                        currentCheckbox.checked = false;
-                        closeModal();
-                    });
+                    if (isSelected) {
+                        title.classList.add('selected');
+                        status.classList.add('selected');
+                        checkboxWrapper.style.display = 'none';
+                    } else {
+                        title.classList.remove('selected');
+                        status.classList.remove('selected');
+                        checkboxWrapper.style.display = 'flex';
+                    }
                 }
-            });
-            
-            // Cancelar seleção
-            cancelBtn.addEventListener('click', closeModal);
-            
-            // Adicionar listeners para mudanças nos checkboxes
-            document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-                    if (checkbox.checked) {
-                        // Impedir a marcação imediata
+                
+                // Função para abrir o modal de confirmação
+                function openConfirmationModal(checkbox, itemName) {
+                    currentCheckbox = checkbox;
+                    currentItemName = itemName;
+                    modalText.textContent = `Você optou por ${itemName}. Você confirma?`;
+                    modalOverlay.classList.add('active');
+                }
+                
+                // Função para fechar o modal
+                function closeModal() {
+                    modalOverlay.classList.remove('active');
+                    if (currentCheckbox) {
+                        currentCheckbox.checked = false;
+                    }
+                    currentCheckbox = null;
+                    currentItemName = '';
+                }
+                
+                // Confirmar seleção
+                confirmBtn.addEventListener('click', () => {
+                    if (currentCheckbox) {
+                        const itemId = currentCheckbox.id;
+                        
+                        // Salvar no Firestore
+                        itemsCollection.doc(itemId).set({
+                            selected: true,
+                            itemName: currentItemName,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        }).then(() => {
+                            updateItemAppearance(currentCheckbox, true);
+                            closeModal();
+                        }).catch((error) => {
+                            console.error("Erro ao salvar no Firestore:", error);
+                            currentCheckbox.checked = false;
+                            closeModal();
+                            alert("Ocorreu um erro ao salvar sua escolha. Por favor, tente novamente.");
+                        });
+                    }
+                });
+                
+                // Cancelar seleção
+                cancelBtn.addEventListener('click', closeModal);
+                
+                // Adicionar listeners para clicks nos checkboxes (usando click em vez de change)
+                document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('click', (e) => {
+                        // Prevenir o comportamento padrão do checkbox
                         e.preventDefault();
-                        checkbox.checked = false;
                         
                         // Obter o nome do item do título do card
                         const card = checkbox.closest('.card');
@@ -799,28 +778,59 @@
                             if (doc.exists && doc.data().selected) {
                                 // Item já selecionado por outra pessoa
                                 updateItemAppearance(checkbox, true);
+                                alert("Este item já foi escolhido por outra pessoa.");
                             } else {
                                 // Abrir modal de confirmação
                                 openConfirmationModal(checkbox, itemName);
                             }
+                        }).catch(error => {
+                            console.error("Erro ao verificar item:", error);
+                            alert("Ocorreu um erro ao verificar o item. Por favor, tente novamente.");
                         });
-                    }
+                    });
                 });
-            });
-            
-            // Atualizar em tempo real quando outras pessoas selecionarem itens
-            itemsCollection.onSnapshot((snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "modified" || change.type === "added") {
-                        const itemId = change.doc.id;
-                        const checkbox = document.getElementById(itemId);
-                        if (checkbox && change.doc.data().selected) {
-                            checkbox.checked = true;
-                            updateItemAppearance(checkbox, true);
+                
+                // Função para atualizar os checkboxes baseado nos dados do Firestore
+                function updateCheckboxesFromFirestore() {
+                    document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+                        const itemId = checkbox.id;
+                        
+                        // Buscar o estado do item no Firestore
+                        itemsCollection.doc(itemId).get().then((doc) => {
+                            if (doc.exists && doc.data().selected) {
+                                checkbox.checked = true;
+                                updateItemAppearance(checkbox, true);
+                            } else {
+                                checkbox.checked = false;
+                                updateItemAppearance(checkbox, false);
+                            }
+                        }).catch((error) => {
+                            console.error("Erro ao obter documento:", error);
+                        });
+                    });
+                }
+                
+                // Atualizar estado inicial dos checkboxes
+                updateCheckboxesFromFirestore();
+                
+                // Atualizar em tempo real quando outras pessoas selecionarem itens
+                itemsCollection.onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === "modified" || change.type === "added") {
+                            const itemId = change.doc.id;
+                            const checkbox = document.getElementById(itemId);
+                            if (checkbox && change.doc.data().selected) {
+                                checkbox.checked = true;
+                                updateItemAppearance(checkbox, true);
+                            }
                         }
-                    }
+                    });
                 });
-            });
+                
+            } catch (error) {
+                console.error("Erro na inicialização:", error);
+                alert("Ocorreu um erro ao inicializar o aplicativo. Por favor, recarregue a página.");
+            }
         });
     </script>
     
