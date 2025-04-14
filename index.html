@@ -1,841 +1,485 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chá de Casa Nova</title>
-    <style>
-        :root {
-            --cinza: #6b696a;
-            --verde-claro: #a3b899;
-            --fundo: #f5f5f5;
-            --branco: #ffffff;
-            --bege: #e8e0d0;
-            --madeira: #c8a887;
-        }
-        
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--fundo);
-            color: var(--cinza);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 0.5rem;
-            color: var(--cinza);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-        
-        .theme-info {
-            background-color: var(--bege);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2.5rem;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .theme-title {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            color: var(--cinza);
-        }
-        
-        .color-palette {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .color-swatch {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .color-swatch span {
-            font-size: 0.8rem;
-            color: #444;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        
-        .theme-description {
-            font-size: 0.95rem;
-            max-width: 80%;
-            margin: 0 auto;
-            color: #555;
-        }
-        
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-        
-        .card {
-            background-color: var(--branco);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card-img {
-            height: 180px;
-            background-color: var(--verde-claro);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-        
-        .card-content {
-            padding: 1.5rem;
-            position: relative;
-        }
-        
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            transition: text-decoration 0.3s ease;
-        }
-        
-        .card-title.selected {
-            text-decoration: line-through;
-            color: #aaa;
-        }
-        
-        .card-description {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 1.5rem;
-        }
-        
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .btn {
-            display: inline-block;
-            background-color: var(--cinza);
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: background-color 0.3s ease;
-        }
-        
-        .btn:hover {
-            background-color: #555;
-        }
-        
-        .checkbox-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .custom-checkbox {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--cinza);
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-        
-        .custom-checkbox:checked {
-            background-color: var(--verde-claro);
-            border-color: var(--verde-claro);
-        }
-        
-        .custom-checkbox:checked::after {
-            content: "✓";
-            color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .checkbox-label {
-            font-size: 0.8rem;
-            color: #888;
-        }
-        
-        .item-status {
-            position: absolute;
-            top: 3.2rem;
-            left: 1.5rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--verde-claro);
-            display: none;
-        }
-        
-        .item-status.selected {
-            display: block;
-        }
-        
-        /* Modal de confirmação */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal {
-            background-color: white;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            text-align: center;
-        }
-        
-        .modal h3 {
-            margin-top: 0;
-            color: var(--cinza);
-            font-weight: 500;
-        }
-        
-        .modal-text {
-            margin-bottom: 1.5rem;
-        }
-        
-        .modal-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-        
-        .modal-btn {
-            padding: 0.6rem 1.8rem;
-            border-radius: 4px;
-            border: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        .confirm-btn {
-            background-color: var(--verde-claro);
-            color: white;
-        }
-        
-        .confirm-btn:hover {
-            background-color: #8fa788;
-        }
-        
-        .cancel-btn {
-            background-color: #eee;
-            color: #666;
-        }
-        
-        .cancel-btn:hover {
-            background-color: #ddd;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid #eee;
-            color: #888;
-            font-size: 0.9rem;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chá de Casa Nova</title>
+
+  <style>
+    :root {
+      --cinza: #6b696a;
+      --verde-claro: #a3b899;
+      --fundo: #f5f5f5;
+      --branco: #ffffff;
+      --bege: #e8e0d0;
+      --madeira: #c8a887;
+    }
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: var(--fundo);
+      color: var(--cinza);
+      margin: 0;
+      line-height: 1.6;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+    header   { text-align: center; margin-bottom: 3rem; }
+    h1       { font-size: 2.5rem; font-weight: 300; margin-bottom: .5rem; }
+    .subtitle{ font-size: 1.2rem; font-weight: 300; margin-bottom: 2rem; }
+
+    .theme-info{background:var(--bege);border-radius:8px;padding:1.5rem;margin-bottom:2.5rem;text-align:center;box-shadow:0 4px 8px rgba(0,0,0,.05);}
+    .theme-title{font-size:1.1rem;font-weight:500;margin-bottom:1rem;}
+    .color-palette{display:flex;justify-content:center;gap:1rem;margin:1rem 0;}
+    .color-swatch{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.1);}
+    .color-swatch span{font-size:.8rem;color:#444;background:rgba(255,255,255,.8);padding:2px 8px;border-radius:10px;}
+    .theme-description{font-size:.95rem;max-width:80%;margin:0 auto;color:#555;}
+
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;}
+    .card{background:var(--branco);border-radius:8px;overflow:hidden;box-shadow:0 4px 8px rgba(0,0,0,.05);transition:.3s;position:relative;}
+    .card:hover{transform:translateY(-5px);box-shadow:0 8px 16px rgba(0,0,0,.1);}
+    .card-img{height:180px;background:var(--verde-claro);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;}
+    .card-content{padding:1.5rem;position:relative;}
+    .card-title{font-size:1.2rem;font-weight:500;margin-bottom:.5rem;transition:text-decoration .3s;}
+    .card-title.selected{text-decoration:line-through;color:#aaa;}
+    .card-description{font-size:.9rem;color:#888;margin-bottom:1.5rem;}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;}
+    .btn{display:inline-block;background:var(--cinza);color:#fff;padding:.6rem 1.2rem;border-radius:4px;text-decoration:none;font-size:.9rem;transition:.3s;}
+    .btn:hover{background:#555;}
+    .checkbox-wrapper{display:flex;align-items:center;gap:.5rem;}
+    .custom-checkbox{-webkit-appearance:none;appearance:none;width:20px;height:20px;border:2px solid var(--cinza);border-radius:4px;cursor:pointer;position:relative;transition:.3s;}
+    .custom-checkbox:checked{background:var(--verde-claro);border-color:var(--verde-claro);}
+    .custom-checkbox:checked::after{content:'✓';color:#fff;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+    .checkbox-label{font-size:.8rem;color:#888;}
+    .item-status{position:absolute;top:3.2rem;left:1.5rem;font-size:.9rem;font-weight:500;color:var(--verde-claro);display:none;}
+    .item-status.selected{display:block;}
+
+    /* modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:.3s;}
+    .modal-overlay.active{opacity:1;visibility:visible;}
+    .modal{background:#fff;border-radius:8px;width:90%;max-width:400px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.15);text-align:center;}
+    .modal h3{margin:0;color:var(--cinza);font-weight:500;}
+    .modal-actions{display:flex;justify-content:center;gap:1rem;margin-top:1.5rem;}
+    .modal-btn{padding:.6rem 1.8rem;border-radius:4px;border:none;font-size:.9rem;cursor:pointer;transition:.3s;}
+    .confirm-btn{background:var(--verde-claro);color:#fff;}
+    .confirm-btn:hover{background:#8fa788;}
+    .cancel-btn{background:#eee;color:#666;}
+    .cancel-btn:hover{background:#ddd;}
+
+    footer{text-align:center;margin-top:4rem;padding-top:2rem;border-top:1px solid #eee;color:#888;font-size:.9rem;}
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>Chá de Casa Nova - Luiza & Fellipe</h1>
-            <div class="subtitle">Marque o item que você gostaria de levar para nossa nova casa</div>
-            
-            <div class="theme-info">
-                <div class="theme-title">Paleta de cores da nossa casa</div>
-                <div class="color-palette">
-                    <div class="color-swatch" style="background-color: #e8e0d0;">
-                        <span>Creme</span>
-                    </div>
-                    <div class="color-swatch" style="background-color: #d8cdb5;">
-                        <span>Bege</span>
-                    </div>
-                    <div class="color-swatch" style="background-color: #c8a887;">
-                        <span>Madeira</span>
-                    </div>
-                    <div class="color-swatch" style="background-color: #b6a284;">
-                        <span>Bambu</span>
-                    </div>
-                </div>
-                <p class="theme-description">Nossa casa terá uma decoração em tons neutros, com elementos em madeira e bambu, criando um ambiente acolhedor e natural. Presentes nestas cores combinarão perfeitamente com nosso estilo!</p>
-            </div>
-        </header>
-        
-        <div class="card-grid">
-            <!-- Card 1 -->
-            <div class="card">
-                <div class="card-img">Panelas</div>
-                <div class="card-content">
-                    <h3 class="card-title">Conjunto de panelas</h3>
-                    <p class="card-description">Conjunto de panelas para cozinhar no dia a dia.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item1">
-                            <label for="item1" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Card 2 -->
-            <div class="card">
-                <div class="card-img">Talheres</div>
-                <div class="card-content">
-                    <h3 class="card-title">Talheres</h3>
-                    <p class="card-description">Facas, garfos, colheres grandes e pequenas e faca de carne.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item2">
-                            <label for="item2" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Card 3 -->
-            <div class="card">
-                <div class="card-img">Utensílios</div>
-                <div class="card-content">
-                    <h3 class="card-title">Colheres e espátulas</h3>
-                    <p class="card-description">Colheres e espátulas para cozinhar.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item3">
-                            <label for="item3" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Card 4 -->
-            <div class="card">
-                <div class="card-img">Café</div>
-                <div class="card-content">
-                    <h3 class="card-title">Prensa francesa</h3>
-                    <p class="card-description">Para preparar café de forma artesanal.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item4">
-                            <label for="item4" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Card 5 -->
-            <div class="card">
-                <div class="card-img">Churrasco</div>
-                <div class="card-content">
-                    <h3 class="card-title">Kit churrasco</h3>
-                    <p class="card-description">Kit churrasco Tramontina com 3 peças.</p>
-                    <div class="card-footer">
-                        <a href="https://www.magazineluiza.com.br/kit-churrasco-tramontina-10239753-3-pecas/p/238299100/ud/cjxu/?&seller_id=magazineluiza&utm_source=google&utm_medium=cpc&utm_term=79480&utm_campaign=google_eco_per_ven_pla_lev_sor_1p_ud-csp&utm_content=&partner_id=79480&gclsrc=aw.ds&gad_source=1&gbraid=0AAAAAD4zZmS2DwsHnvwKAT14hzdT-g8jk&gclid=CjwKCAjw5PK_BhBBEiwAL7GTPVk0MwnugBbD5UxlWSiEceZHwkLh0iFMeYEVMg5oS_fgNz3OjIbEiBoCv20QAvD_BwE" target="_blank" class="btn">Ver referência</a>
-                        <div class="checkbox-wrapper">
-                            <input type="checkbox" class="custom-checkbox" id="item5">
-                            <label for="item5" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Card 6 -->
-            <div class="card">
-                <div class="card-img">Pratos</div>
-                <div class="card-content">
-                    <h3 class="card-title">Pratos</h3>
-                    <p class="card-description">Pratos rasos e fundos para as refeições.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item6">
-                            <label for="item6" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="container">
+    <!-- cabeçalho -->
+    <header>
+      <h1>Chá de Casa Nova – Luiza &amp; Fellipe</h1>
+      <p class="subtitle">Marque o item que você gostaria de levar para nossa nova casa</p>
 
-            <!-- Card 7 -->
-            <div class="card">
-                <div class="card-img">Bowls</div>
-                <div class="card-content">
-                    <h3 class="card-title">Bowls</h3>
-                    <p class="card-description">Tigelas para servir alimentos.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item7">
-                            <label for="item7" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 8 -->
-            <div class="card">
-                <div class="card-img">Xícaras</div>
-                <div class="card-content">
-                    <h3 class="card-title">Xícaras</h3>
-                    <p class="card-description">Xícaras para café, chá e outras bebidas.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item8">
-                            <label for="item8" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 9 -->
-            <div class="card">
-                <div class="card-img">Potes</div>
-                <div class="card-content">
-                    <h3 class="card-title">Potes para armazenamento</h3>
-                    <p class="card-description">Potes para guardar alimentos na geladeira ou despensa.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item9">
-                            <label for="item9" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 10 -->
-            <div class="card">
-                <div class="card-img">Mesa</div>
-                <div class="card-content">
-                    <h3 class="card-title">Jogo americano</h3>
-                    <p class="card-description">Jogo americano para proteger a mesa durante as refeições.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item10">
-                            <label for="item10" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 11 -->
-            <div class="card">
-                <div class="card-img">Micro-ondas</div>
-                <div class="card-content">
-                    <h3 class="card-title">Micro-ondas</h3>
-                    <p class="card-description">Micro-ondas para esquentar e descongelar alimentos.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item11">
-                            <label for="item11" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 12 -->
-            <div class="card">
-                <div class="card-img">Sanduicheira</div>
-                <div class="card-content">
-                    <h3 class="card-title">Sanduicheira</h3>
-                    <p class="card-description">Para preparar sanduíches quentes.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item12">
-                            <label for="item12" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 13 -->
-            <div class="card">
-                <div class="card-img">Air Fryer</div>
-                <div class="card-content">
-                    <h3 class="card-title">Air Fryer</h3>
-                    <p class="card-description">Fritadeira a ar para preparar alimentos de forma mais saudável.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item13">
-                            <label for="item13" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 14 -->
-            <div class="card">
-                <div class="card-img">Liquidificador</div>
-                <div class="card-content">
-                    <h3 class="card-title">Liquidificador</h3>
-                    <p class="card-description">Para preparar sucos, vitaminas e outros.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item14">
-                            <label for="item14" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 15 -->
-            <div class="card">
-                <div class="card-img">Mix</div>
-                <div class="card-content">
-                    <h3 class="card-title">Mix para triturar</h3>
-                    <p class="card-description">Mixer para triturar alimentos.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item15">
-                            <label for="item15" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 16 -->
-            <div class="card">
-                <div class="card-img">Tapete</div>
-                <div class="card-content">
-                    <h3 class="card-title">Tapete para pés da cama</h3>
-                    <p class="card-description">Tapete para colocar ao lado da cama.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item16">
-                            <label for="item16" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 17 -->
-            <div class="card">
-                <div class="card-img">Cortina</div>
-                <div class="card-content">
-                    <h3 class="card-title">Cortina vuau porta janela</h3>
-                    <p class="card-description">Cortina para porta/janela (medir).</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item17">
-                            <label for="item17" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 18 -->
-            <div class="card">
-                <div class="card-img">Quadros</div>
-                <div class="card-content">
-                    <h3 class="card-title">Quadros/decoração parede</h3>
-                    <p class="card-description">Quadros e itens decorativos para a parede.</p>
-                    <div class="card-footer">
-                        <div class="checkbox-wrapper" style="margin-left: auto;">
-                            <input type="checkbox" class="custom-checkbox" id="item18">
-                            <label for="item18" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 19 -->
-            <div class="card">
-                <div class="card-img">Escada</div>
-                <div class="card-content">
-                    <h3 class="card-title">Escada de alumínio 3 degraus</h3>
-                    <p class="card-description">Escada de alumínio com 3 degraus Mor.</p>
-                    <div class="card-footer">
-                        <a href="https://www.koerich.com.br/p/escada-de-aluminio-3-degraus-5101-mor/3868800?gad_source=1&gbraid=0AAAAADtBv5x0g21IwzsghYH4rqz4GBeVq&gclid=CjwKCAjw5PK_BhBBEiwAL7GTPQCATR5_0G-mU_Fu2w82zuqs21UynAAlQFfOqtewQo_try9CANGI2xoC44cQAvD_BwE" target="_blank" class="btn">Ver referência</a>
-                        <div class="checkbox-wrapper">
-                            <input type="checkbox" class="custom-checkbox" id="item19">
-                            <label for="item19" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 20 -->
-            <div class="card">
-                <div class="card-img">Varal</div>
-                <div class="card-content">
-                    <h3 class="card-title">Varal de chão alumínio</h3>
-                    <p class="card-description">Varal de chão slim com abas em alumínio Mor.</p>
-                    <div class="card-footer">
-                        <a href="https://www.koerich.com.br/p/varal-de-chao-slim-6046-com-abas-aluminio-mor/3801800?gad_source=1&gbraid=0AAAAADtBv5x0g21IwzsghYH4rqz4GBeVq&gclid=CjwKCAjw5PK_BhBBEiwAL7GTPZbej7a9J00SQqiz8f0UdFOivPP2q_Xgk1kuclkb1tb6gujI9ed92RoCfGwQAvD_BwE" target="_blank" class="btn">Ver referência</a>
-                        <div class="checkbox-wrapper">
-                            <input type="checkbox" class="custom-checkbox" id="item20">
-                            <label for="item20" class="checkbox-label">Já escolhido</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="theme-info">
+        <div class="theme-title">Paleta de cores da nossa casa</div>
+        <div class="color-palette">
+          <div class="color-swatch" style="background:#e8e0d0;"><span>Creme</span></div>
+          <div class="color-swatch" style="background:#d8cdb5;"><span>Bege</span></div>
+          <div class="color-swatch" style="background:#c8a887;"><span>Madeira</span></div>
+          <div class="color-swatch" style="background:#b6a284;"><span>Bambu</span></div>
         </div>
-        
-        <footer>
-            <p>Muito obrigado pelo carinho e presença!</p>
-        </footer>
+        <p class="theme-description">
+          Nossa casa terá uma decoração em tons neutros, com elementos em madeira e bambu,
+          criando um ambiente acolhedor e natural. Presentes nestas cores combinarão
+          perfeitamente com nosso estilo!
+        </p>
+      </div>
+    </header>
+
+    <!-- grid de cards -->
+    <div class="card-grid">
+      <!-- ============ 20 cards ============ -->
+      <!-- 1 -->
+      <div class="card">
+        <div class="card-img">Panelas</div>
+        <div class="card-content">
+          <h3 class="card-title">Conjunto de panelas</h3>
+          <p class="card-description">Conjunto de panelas para cozinhar no dia a dia.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item1" />
+              <label for="item1" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 2 -->
+      <div class="card">
+        <div class="card-img">Talheres</div>
+        <div class="card-content">
+          <h3 class="card-title">Talheres</h3>
+          <p class="card-description">Facas, garfos, colheres grandes e pequenas e faca de carne.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item2" />
+              <label for="item2" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 3 -->
+      <div class="card">
+        <div class="card-img">Utensílios</div>
+        <div class="card-content">
+          <h3 class="card-title">Colheres e espátulas</h3>
+          <p class="card-description">Colheres e espátulas para cozinhar.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item3" />
+              <label for="item3" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 4 -->
+      <div class="card">
+        <div class="card-img">Café</div>
+        <div class="card-content">
+          <h3 class="card-title">Prensa francesa</h3>
+          <p class="card-description">Para preparar café de forma artesanal.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item4" />
+              <label for="item4" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 5 -->
+      <div class="card">
+        <div class="card-img">Churrasco</div>
+        <div class="card-content">
+          <h3 class="card-title">Kit churrasco</h3>
+          <p class="card-description">Kit churrasco Tramontina com 3 peças.</p>
+          <div class="card-footer">
+            <a href="https://www.magazineluiza.com.br/kit-churrasco-tramontina-10239753-3-pecas/p/238299100/ud/cjxu/"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item5" />
+              <label for="item5" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 6 -->
+      <div class="card">
+        <div class="card-img">Pratos</div>
+        <div class="card-content">
+          <h3 class="card-title">Pratos</h3>
+          <p class="card-description">Pratos rasos e fundos para as refeições.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item6" />
+              <label for="item6" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 7 -->
+      <div class="card">
+        <div class="card-img">Bowls</div>
+        <div class="card-content">
+          <h3 class="card-title">Bowls</h3>
+          <p class="card-description">Tigelas para servir alimentos.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item7" />
+              <label for="item7" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 8 -->
+      <div class="card">
+        <div class="card-img">Xícaras</div>
+        <div class="card-content">
+          <h3 class="card-title">Xícaras</h3>
+          <p class="card-description">Xícaras para café, chá e outras bebidas.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item8" />
+              <label for="item8" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 9 -->
+      <div class="card">
+        <div class="card-img">Potes</div>
+        <div class="card-content">
+          <h3 class="card-title">Potes para armazenamento</h3>
+          <p class="card-description">Potes para guardar alimentos na geladeira ou despensa.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item9" />
+              <label for="item9" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 10 -->
+      <div class="card">
+        <div class="card-img">Mesa</div>
+        <div class="card-content">
+          <h3 class="card-title">Jogo americano</h3>
+          <p class="card-description">Jogo americano para proteger a mesa durante as refeições.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item10" />
+              <label for="item10" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 11 -->
+      <div class="card">
+        <div class="card-img">Micro-ondas</div>
+        <div class="card-content">
+          <h3 class="card-title">Micro-ondas</h3>
+          <p class="card-description">Micro-ondas para esquentar e descongelar alimentos.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item11" />
+              <label for="item11" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 12 -->
+      <div class="card">
+        <div class="card-img">Sanduicheira</div>
+        <div class="card-content">
+          <h3 class="card-title">Sanduicheira</h3>
+          <p class="card-description">Para preparar sanduíches quentes.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item12" />
+              <label for="item12" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 13 -->
+      <div class="card">
+        <div class="card-img">Air Fryer</div>
+        <div class="card-content">
+          <h3 class="card-title">Air Fryer</h3>
+          <p class="card-description">Fritadeira a ar para preparar alimentos de forma mais saudável.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item13" />
+              <label for="item13" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 14 -->
+      <div class="card">
+        <div class="card-img">Liquidificador</div>
+        <div class="card-content">
+          <h3 class="card-title">Liquidificador</h3>
+          <p class="card-description">Para preparar sucos, vitaminas e outros.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item14" />
+              <label for="item14" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 15 -->
+      <div class="card">
+        <div class="card-img">Mix</div>
+        <div class="card-content">
+          <h3 class="card-title">Mix para triturar</h3>
+          <p class="card-description">Mixer para triturar alimentos.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item15" />
+              <label for="item15" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 16 -->
+      <div class="card">
+        <div class="card-img">Tapete</div>
+        <div class="card-content">
+          <h3 class="card-title">Tapete para pés da cama</h3>
+          <p class="card-description">Tapete para colocar ao lado da cama.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item16" />
+              <label for="item16" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 17 -->
+      <div class="card">
+        <div class="card-img">Cortina</div>
+        <div class="card-content">
+          <h3 class="card-title">Cortina vuau porta janela</h3>
+          <p class="card-description">Cortina para porta/janela (medir).</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item17" />
+              <label for="item17" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 18 -->
+      <div class="card">
+        <div class="card-img">Quadros</div>
+        <div class="card-content">
+          <h3 class="card-title">Quadros/decoração parede</h3>
+          <p class="card-description">Quadros e itens decorativos para a parede.</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item18" />
+              <label for="item18" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 19 -->
+      <div class="card">
+        <div class="card-img">Escada</div>
+        <div class="card-content">
+          <h3 class="card-title">Escada de alumínio 3 degraus</h3>
+          <p class="card-description">Escada de alumínio com 3 degraus Mor.</p>
+          <div class="card-footer">
+            <a href="https://www.koerich.com.br/p/escada-de-aluminio-3-degraus-5101-mor/3868800"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item19" />
+              <label for="item19" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 20 -->
+      <div class="card">
+        <div class="card-img">Varal</div>
+        <div class="card-content">
+          <h3 class="card-title">Varal de chão alumínio</h3>
+          <p class="card-description">Varal de chão slim com abas em alumínio Mor.</p>
+          <div class="card-footer">
+            <a href="https://www.koerich.com.br/p/varal-de-chao-slim-6046-com-abas-aluminio-mor/3801800"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item20" />
+              <label for="item20" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    <script>
-        // Adicionar o modal de confirmação ao DOM e inicializar Firebase
-        document.addEventListener('DOMContentLoaded', function() {
-            // Adicionar o modal de confirmação ao DOM
-            const modalHTML = `
-                <div class="modal-overlay" id="confirmModal">
-                    <div class="modal">
-                        <h3>Confirmação</h3>
-                        <p class="modal-text" id="modalText">Você optou por [item]. Você confirma?</p>
-                        <div class="modal-actions">
-                            <button class="modal-btn confirm-btn" id="confirmBtn">Sim</button>
-                            <button class="modal-btn cancel-btn" id="cancelBtn">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            
-            // Elementos do modal
-            const modalOverlay = document.getElementById('confirmModal');
-            const modalText = document.getElementById('modalText');
-            const confirmBtn = document.getElementById('confirmBtn');
-            const cancelBtn = document.getElementById('cancelBtn');
-            
-            // Variáveis para controle da confirmação
-            let currentCheckbox = null;
-            let currentItemName = '';
-            
-            // Configuração do Firebase
-            const firebaseConfig = {
-                apiKey: "AIzaSyA-7JXIVKKWnirSxjjDUnQ1HMpjLQ2qO-Y",
-                authDomain: "cha-casa-nova-luiza-fellipe.firebaseapp.com",
-                projectId: "cha-casa-nova-luiza-fellipe",
-                storageBucket: "cha-casa-nova-luiza-fellipe.appspot.com",
-                messagingSenderId: "345678912345",
-                appId: "1:345678912345:web:a7b8c9d0e1f2g3h4i5j6k7"
-            };
-            
-            try {
-                // Inicializar o Firebase se ainda não estiver inicializado
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                const db = firebase.firestore();
-                const itemsCollection = db.collection('items');
-                
-                // Adicionar elemento de status a cada card
-                document.querySelectorAll('.card').forEach(card => {
-                    const cardContent = card.querySelector('.card-content');
-                    const statusElement = document.createElement('div');
-                    statusElement.classList.add('item-status');
-                    statusElement.textContent = 'Item já escolhido';
-                    cardContent.appendChild(statusElement);
-                });
-                
-                // Atualizar label dos checkboxes
-                document.querySelectorAll('.checkbox-label').forEach(label => {
-                    label.textContent = 'Escolher item';
-                });
-                
-                // Função para atualizar a aparência do item baseado em seu estado
-                function updateItemAppearance(checkbox, isSelected) {
-                    const card = checkbox.closest('.card');
-                    const title = card.querySelector('.card-title');
-                    const status = card.querySelector('.item-status');
-                    const checkboxWrapper = card.querySelector('.checkbox-wrapper');
-                    
-                    if (isSelected) {
-                        title.classList.add('selected');
-                        status.classList.add('selected');
-                        checkboxWrapper.style.display = 'none';
-                    } else {
-                        title.classList.remove('selected');
-                        status.classList.remove('selected');
-                        checkboxWrapper.style.display = 'flex';
-                    }
-                }
-                
-                // Função para abrir o modal de confirmação
-                function openConfirmationModal(checkbox, itemName) {
-                    currentCheckbox = checkbox;
-                    currentItemName = itemName;
-                    modalText.textContent = `Você optou por ${itemName}. Você confirma?`;
-                    modalOverlay.classList.add('active');
-                }
-                
-                // Função para fechar o modal
-                function closeModal() {
-                    modalOverlay.classList.remove('active');
-                    if (currentCheckbox) {
-                        currentCheckbox.checked = false;
-                    }
-                    currentCheckbox = null;
-                    currentItemName = '';
-                }
-                
-                // Confirmar seleção
-                confirmBtn.addEventListener('click', () => {
-                    if (currentCheckbox) {
-                        const itemId = currentCheckbox.id;
-                        
-                        // Salvar no Firestore
-                        itemsCollection.doc(itemId).set({
-                            selected: true,
-                            itemName: currentItemName,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then(() => {
-                            updateItemAppearance(currentCheckbox, true);
-                            closeModal();
-                        }).catch((error) => {
-                            console.error("Erro ao salvar no Firestore:", error);
-                            currentCheckbox.checked = false;
-                            closeModal();
-                            alert("Ocorreu um erro ao salvar sua escolha. Por favor, tente novamente.");
-                        });
-                    }
-                });
-                
-                // Cancelar seleção
-                cancelBtn.addEventListener('click', closeModal);
-                
-                // Adicionar listeners para clicks nos checkboxes (usando click em vez de change)
-                document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-                    checkbox.addEventListener('click', (e) => {
-                        // Prevenir o comportamento padrão do checkbox
-                        e.preventDefault();
-                        
-                        // Obter o nome do item do título do card
-                        const card = checkbox.closest('.card');
-                        const itemName = card.querySelector('.card-title').textContent;
-                        
-                        // Verificar se o item já está selecionado
-                        const itemId = checkbox.id;
-                        itemsCollection.doc(itemId).get().then((doc) => {
-                            if (doc.exists && doc.data().selected) {
-                                // Item já selecionado por outra pessoa
-                                updateItemAppearance(checkbox, true);
-                                alert("Este item já foi escolhido por outra pessoa.");
-                            } else {
-                                // Abrir modal de confirmação
-                                openConfirmationModal(checkbox, itemName);
-                            }
-                        }).catch(error => {
-                            console.error("Erro ao verificar item:", error);
-                            alert("Ocorreu um erro ao verificar o item. Por favor, tente novamente.");
-                        });
-                    });
-                });
-                
-                // Função para atualizar os checkboxes baseado nos dados do Firestore
-                function updateCheckboxesFromFirestore() {
-                    document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-                        const itemId = checkbox.id;
-                        
-                        // Buscar o estado do item no Firestore
-                        itemsCollection.doc(itemId).get().then((doc) => {
-                            if (doc.exists && doc.data().selected) {
-                                checkbox.checked = true;
-                                updateItemAppearance(checkbox, true);
-                            } else {
-                                checkbox.checked = false;
-                                updateItemAppearance(checkbox, false);
-                            }
-                        }).catch((error) => {
-                            console.error("Erro ao obter documento:", error);
-                        });
-                    });
-                }
-                
-                // Atualizar estado inicial dos checkboxes
-                updateCheckboxesFromFirestore();
-                
-                // Atualizar em tempo real quando outras pessoas selecionarem itens
-                itemsCollection.onSnapshot((snapshot) => {
-                    snapshot.docChanges().forEach((change) => {
-                        if (change.type === "modified" || change.type === "added") {
-                            const itemId = change.doc.id;
-                            const checkbox = document.getElementById(itemId);
-                            if (checkbox && change.doc.data().selected) {
-                                checkbox.checked = true;
-                                updateItemAppearance(checkbox, true);
-                            }
-                        }
-                    });
-                });
-                
-            } catch (error) {
-                console.error("Erro na inicialização:", error);
-                alert("Ocorreu um erro ao inicializar o aplicativo. Por favor, recarregue a página.");
-            }
+
+    <footer><p>Muito obrigado pelo carinho e presença!</p></footer>
+  </div>
+
+  <!-- ==================== Firebase + JS ==================== -->
+  <script type="module">
+    /* 1. Firebase CDN imports */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+    /* 2. Config do projeto */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBthvOflM2Vge4Q2Sc-kJTQ81OA0Zw7i7I",
+      authDomain: "chacasanova-dbc8d.firebaseapp.com",
+      projectId: "chacasanova-dbc8d",
+      storageBucket: "chacasanova-dbc8d.appspot.com",
+      messagingSenderId: "332754318600",
+      appId: "1:332754318600:web:22d8ac2c56fc5e52d668bd",
+      measurementId: "G-TLP3P8XE8P"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    /* 3. Funções Firestore */
+    const gravarEscolha = id => setDoc(doc(db,"presentes",id),{escolhido:true});
+    const escutarItem   = (id,cb) =>
+      onSnapshot(doc(db,"presentes",id),snap=>{
+        const marcado = snap.data()?.escolhido===true;
+        cb.checked = marcado;
+        updateItemAppearance(cb,marcado);
+      });
+
+    /* 4. Lógica da página */
+    document.addEventListener("DOMContentLoaded",()=>{
+      /* modal */
+      const modalHTML = `
+        <div class="modal-overlay" id="confirmModal">
+          <div class="modal">
+            <h3>Confirmação</h3>
+            <p class="modal-text" id="modalText">Você optou por [item]. Você confirma?</p>
+            <div class="modal-actions">
+              <button class="modal-btn confirm-btn" id="confirmBtn">Sim</button>
+              <button class="modal-btn cancel-btn"  id="cancelBtn">Cancelar</button>
+            </div>
+          </div>
+        </div>`;
+      document.body.insertAdjacentHTML("beforeend",modalHTML);
+      const modalOverlay=document.getElementById("confirmModal");
+      const modalText   =document.getElementById("modalText");
+      const confirmBtn  =document.getElementById("confirmBtn");
+      const cancelBtn   =document.getElementById("cancelBtn");
+      let currentCheckbox=null;
+
+      /* status + label */
+      document.querySelectorAll(".card").forEach(card=>{
+        const st=document.createElement("div");
+        st.classList.add("item-status"); st.textContent="Item já escolhido";
+        card.querySelector(".card-content").appendChild(st);
+      });
+
+      function updateItemAppearance(cb,sel){
+        const card=cb.closest(".card");
+        const title = card.querySelector(".card-title");
+        const status= card.querySelector(".item-status");
+        const wrap  = card.querySelector(".checkbox-wrapper");
+        if(sel){title.classList.add("selected");status.classList.add("selected");wrap.style.display="none";}
+        else   {title.classList.remove("selected");status.classList.remove("selected");wrap.style.display="flex";}
+      }
+
+      const openModal=(cb,name)=>{
+        currentCheckbox=cb;
+        modalText.textContent=`Você optou por ${name}. Você confirma?`;
+        modalOverlay.classList.add("active");
+      };
+      const closeModal=()=>{
+        modalOverlay.classList.remove("active");
+        if(currentCheckbox) currentCheckbox.checked=false;
+        currentCheckbox=null;
+      };
+
+      confirmBtn.addEventListener("click",async()=>{
+        if(currentCheckbox){
+          await gravarEscolha(currentCheckbox.id);
+          closeModal();
+        }
+      });
+      cancelBtn.addEventListener("click",closeModal);
+
+      /* listeners */
+      document.querySelectorAll(".custom-checkbox").forEach(cb=>{
+        escutarItem(cb.id,cb);
+        cb.addEventListener("click",e=>{
+          e.preventDefault();
+          if(cb.checked) return; // já reservado
+          const name=cb.closest(".card").querySelector(".card-title").textContent;
+          openModal(cb,name);
         });
-    </script>
-    
-    <!-- Importar Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+      });
+    });
+  </script>
 </body>
 </html>
