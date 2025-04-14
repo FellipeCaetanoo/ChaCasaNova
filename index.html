@@ -127,12 +127,19 @@
         
         .card-content {
             padding: 1.5rem;
+            position: relative;
         }
         
         .card-title {
             font-size: 1.2rem;
             font-weight: 500;
             margin-bottom: 0.5rem;
+            transition: text-decoration 0.3s ease;
+        }
+        
+        .card-title.selected {
+            text-decoration: line-through;
+            color: #aaa;
         }
         
         .card-description {
@@ -197,6 +204,95 @@
         .checkbox-label {
             font-size: 0.8rem;
             color: #888;
+        }
+        
+        .item-status {
+            position: absolute;
+            top: 3.2rem;
+            left: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--verde-claro);
+            display: none;
+        }
+        
+        .item-status.selected {
+            display: block;
+        }
+        
+        /* Modal de confirmação */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        
+        .modal h3 {
+            margin-top: 0;
+            color: var(--cinza);
+            font-weight: 500;
+        }
+        
+        .modal-text {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .modal-btn {
+            padding: 0.6rem 1.8rem;
+            border-radius: 4px;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .confirm-btn {
+            background-color: var(--verde-claro);
+            color: white;
+        }
+        
+        .confirm-btn:hover {
+            background-color: #8fa788;
+        }
+        
+        .cancel-btn {
+            background-color: #eee;
+            color: #666;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #ddd;
         }
         
         footer {
@@ -548,6 +644,31 @@
     <script>
         // Firebase config e inicialização
         document.addEventListener('DOMContentLoaded', function() {
+            // Adicionar o modal de confirmação ao DOM
+            const modalHTML = `
+                <div class="modal-overlay" id="confirmModal">
+                    <div class="modal">
+                        <h3>Confirmação</h3>
+                        <p class="modal-text" id="modalText">Você optou por [item]. Você confirma?</p>
+                        <div class="modal-actions">
+                            <button class="modal-btn confirm-btn" id="confirmBtn">Sim</button>
+                            <button class="modal-btn cancel-btn" id="cancelBtn">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Elementos do modal
+            const modalOverlay = document.getElementById('confirmModal');
+            const modalText = document.getElementById('modalText');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            // Variáveis para controle da confirmação
+            let currentCheckbox = null;
+            let currentItemName = '';
+            
             // Configuração do Firebase
             const firebaseConfig = {
                 apiKey: "AIzaSyA-7JXIVKKWnirSxjjDUnQ1HMpjLQ2qO-Y",
@@ -563,6 +684,38 @@
             const db = firebase.firestore();
             const itemsCollection = db.collection('items');
             
+            // Função para atualizar a aparência do item baseado em seu estado
+            function updateItemAppearance(checkbox, isSelected) {
+                const card = checkbox.closest('.card');
+                const title = card.querySelector('.card-title');
+                const status = card.querySelector('.item-status');
+                const checkboxWrapper = card.querySelector('.checkbox-wrapper');
+                
+                if (isSelected) {
+                    title.classList.add('selected');
+                    status.classList.add('selected');
+                    checkboxWrapper.style.display = 'none';
+                } else {
+                    title.classList.remove('selected');
+                    status.classList.remove('selected');
+                    checkboxWrapper.style.display = 'flex';
+                }
+            }
+            
+            // Adicionar elemento de status a cada card
+            document.querySelectorAll('.card').forEach(card => {
+                const cardContent = card.querySelector('.card-content');
+                const statusElement = document.createElement('div');
+                statusElement.classList.add('item-status');
+                statusElement.textContent = 'Item já escolhido';
+                cardContent.appendChild(statusElement);
+            });
+            
+            // Atualizar label dos checkboxes
+            document.querySelectorAll('.checkbox-label').forEach(label => {
+                label.textContent = 'Escolher item';
+            });
+            
             // Função para atualizar os checkboxes baseado nos dados do Firestore
             function updateCheckboxesFromFirestore() {
                 document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
@@ -572,10 +725,10 @@
                     itemsCollection.doc(itemId).get().then((doc) => {
                         if (doc.exists && doc.data().selected) {
                             checkbox.checked = true;
-                            checkbox.disabled = true; // Opcional: desabilitar itens já escolhidos
+                            updateItemAppearance(checkbox, true);
                         } else {
                             checkbox.checked = false;
-                            checkbox.disabled = false;
+                            updateItemAppearance(checkbox, false);
                         }
                     }).catch((error) => {
                         console.error("Erro ao obter documento:", error);
@@ -586,28 +739,70 @@
             // Atualizar estado inicial dos checkboxes
             updateCheckboxesFromFirestore();
             
+            // Função para abrir o modal de confirmação
+            function openConfirmationModal(checkbox, itemName) {
+                currentCheckbox = checkbox;
+                currentItemName = itemName;
+                modalText.textContent = `Você optou por ${itemName}. Você confirma?`;
+                modalOverlay.classList.add('active');
+            }
+            
+            // Função para fechar o modal
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                if (currentCheckbox) {
+                    currentCheckbox.checked = false;
+                }
+                currentCheckbox = null;
+                currentItemName = '';
+            }
+            
+            // Confirmar seleção
+            confirmBtn.addEventListener('click', () => {
+                if (currentCheckbox) {
+                    const itemId = currentCheckbox.id;
+                    
+                    // Salvar no Firestore
+                    itemsCollection.doc(itemId).set({
+                        selected: true,
+                        itemName: currentItemName,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        updateItemAppearance(currentCheckbox, true);
+                        closeModal();
+                    }).catch((error) => {
+                        console.error("Erro ao salvar no Firestore:", error);
+                        currentCheckbox.checked = false;
+                        closeModal();
+                    });
+                }
+            });
+            
+            // Cancelar seleção
+            cancelBtn.addEventListener('click', closeModal);
+            
             // Adicionar listeners para mudanças nos checkboxes
             document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-                const itemId = checkbox.id;
-                
-                checkbox.addEventListener('change', () => {
+                checkbox.addEventListener('change', (e) => {
                     if (checkbox.checked) {
-                        // Quando marcado, salvar no Firestore
-                        itemsCollection.doc(itemId).set({
-                            selected: true,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then(() => {
-                            checkbox.disabled = true; // Opcional: desabilitar após seleção
-                        }).catch((error) => {
-                            console.error("Erro ao salvar no Firestore:", error);
-                            checkbox.checked = false;
-                        });
-                    } else {
-                        // Se desmarcado (isso não deve acontecer se estiver desabilitado)
-                        itemsCollection.doc(itemId).update({
-                            selected: false
-                        }).catch((error) => {
-                            console.error("Erro ao atualizar no Firestore:", error);
+                        // Impedir a marcação imediata
+                        e.preventDefault();
+                        checkbox.checked = false;
+                        
+                        // Obter o nome do item do título do card
+                        const card = checkbox.closest('.card');
+                        const itemName = card.querySelector('.card-title').textContent;
+                        
+                        // Verificar se o item já está selecionado
+                        const itemId = checkbox.id;
+                        itemsCollection.doc(itemId).get().then((doc) => {
+                            if (doc.exists && doc.data().selected) {
+                                // Item já selecionado por outra pessoa
+                                updateItemAppearance(checkbox, true);
+                            } else {
+                                // Abrir modal de confirmação
+                                openConfirmationModal(checkbox, itemName);
+                            }
                         });
                     }
                 });
@@ -621,7 +816,7 @@
                         const checkbox = document.getElementById(itemId);
                         if (checkbox && change.doc.data().selected) {
                             checkbox.checked = true;
-                            checkbox.disabled = true; // Opcional: desabilitar itens já escolhidos
+                            updateItemAppearance(checkbox, true);
                         }
                     }
                 });
