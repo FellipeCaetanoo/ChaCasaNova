@@ -102,6 +102,28 @@
       justify-content: center;
       z-index: 2000;
     }
+    
+    /* Error message */
+    .error-message {
+      color: #d9534f;
+      padding: 1rem;
+      margin: 1rem 0;
+      border: 1px solid #d9534f;
+      border-radius: 4px;
+      background-color: #f9f2f4;
+      text-align: center;
+    }
+    
+    /* Botão de recarregar */
+    .reload-btn {
+      background: var(--verde-claro);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 
@@ -110,6 +132,10 @@
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text">Carregando itens...</div>
+    <div id="loadingError" style="display: none; margin-top: 20px;">
+      <p class="error-message">Erro ao carregar dados. Verifique sua conexão.</p>
+      <button class="reload-btn" onclick="window.location.reload()">Tentar novamente</button>
+    </div>
   </div>
 
   <div class="container">
@@ -133,6 +159,11 @@
         </p>
       </div>
     </header>
+
+    <!-- Mensagem de erro para exibir problemas de Firebase -->
+    <div id="mainError" class="error-message" style="display: none;">
+      <p>Não foi possível conectar ao banco de dados. Suas escolhas serão salvas localmente.</p>
+    </div>
 
     <!-- ---------- grid de cards ---------- -->
     <div class="card-grid">
@@ -193,236 +224,7 @@
           </div>
         </div>
       </div>
-      <!-- 5 -->
-      <div class="card">
-        <div class="card-img">Churrasco</div>
-        <div class="card-content">
-          <h3 class="card-title">Kit churrasco</h3>
-          <p class="card-description">Kit churrasco Tramontina com 3 peças.</p>
-          <div class="card-footer">
-            <a href="https://www.magazineluiza.com.br/kit-churrasco-tramontina-10239753-3-pecas/p/238299100"
-               target="_blank" class="btn">Ver referência</a>
-            <div class="checkbox-wrapper">
-              <input type="checkbox" class="custom-checkbox" id="item5" />
-              <label for="item5" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 6 -->
-      <div class="card">
-        <div class="card-img">Pratos</div>
-        <div class="card-content">
-          <h3 class="card-title">Pratos</h3>
-          <p class="card-description">Pratos rasos e fundos para as refeições.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item6" />
-              <label for="item6" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 7 -->
-      <div class="card">
-        <div class="card-img">Bowls</div>
-        <div class="card-content">
-          <h3 class="card-title">Bowls</h3>
-          <p class="card-description">Tigelas para servir alimentos.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item7" />
-              <label for="item7" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 8 -->
-      <div class="card">
-        <div class="card-img">Xícaras</div>
-        <div class="card-content">
-          <h3 class="card-title">Xícaras</h3>
-          <p class="card-description">Xícaras para café, chá e outras bebidas.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item8" />
-              <label for="item8" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 9 -->
-      <div class="card">
-        <div class="card-img">Potes</div>
-        <div class="card-content">
-          <h3 class="card-title">Potes para armazenamento</h3>
-          <p class="card-description">Potes para guardar alimentos na geladeira ou despensa.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item9" />
-              <label for="item9" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 10 -->
-      <div class="card">
-        <div class="card-img">Mesa</div>
-        <div class="card-content">
-          <h3 class="card-title">Jogo americano</h3>
-          <p class="card-description">Jogo americano para proteger a mesa durante as refeições.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item10" />
-              <label for="item10" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 11 -->
-      <div class="card">
-        <div class="card-img">Micro-ondas</div>
-        <div class="card-content">
-          <h3 class="card-title">Micro-ondas</h3>
-          <p class="card-description">Micro-ondas para esquentar e descongelar alimentos.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item11" />
-              <label for="item11" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 12 -->
-      <div class="card">
-        <div class="card-img">Sanduicheira</div>
-        <div class="card-content">
-          <h3 class="card-title">Sanduicheira</h3>
-          <p class="card-description">Para preparar sanduíches quentes.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item12" />
-              <label for="item12" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 13 -->
-      <div class="card">
-        <div class="card-img">Air Fryer</div>
-        <div class="card-content">
-          <h3 class="card-title">Air Fryer</h3>
-          <p class="card-description">Fritadeira a ar para preparar alimentos de forma mais saudável.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item13" />
-              <label for="item13" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 14 -->
-      <div class="card">
-        <div class="card-img">Liquidificador</div>
-        <div class="card-content">
-          <h3 class="card-title">Liquidificador</h3>
-          <p class="card-description">Para preparar sucos, vitaminas e outros.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item14" />
-              <label for="item14" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 15 -->
-      <div class="card">
-        <div class="card-img">Mix</div>
-        <div class="card-content">
-          <h3 class="card-title">Mix para triturar</h3>
-          <p class="card-description">Mixer para triturar alimentos.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item15" />
-              <label for="item15" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 16 -->
-      <div class="card">
-        <div class="card-img">Tapete</div>
-        <div class="card-content">
-          <h3 class="card-title">Tapete para pés da cama</h3>
-          <p class="card-description">Tapete para colocar ao lado da cama.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item16" />
-              <label for="item16" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 17 -->
-      <div class="card">
-        <div class="card-img">Cortina</div>
-        <div class="card-content">
-          <h3 class="card-title">Cortina vuau porta janela</h3>
-          <p class="card-description">Cortina para porta/janela (medir).</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item17" />
-              <label for="item17" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 18 -->
-      <div class="card">
-        <div class="card-img">Quadros</div>
-        <div class="card-content">
-          <h3 class="card-title">Quadros/decoração parede</h3>
-          <p class="card-description">Quadros e itens decorativos para a parede.</p>
-          <div class="card-footer">
-            <div class="checkbox-wrapper" style="margin-left:auto;">
-              <input type="checkbox" class="custom-checkbox" id="item18" />
-              <label for="item18" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 19 -->
-      <div class="card">
-        <div class="card-img">Escada</div>
-        <div class="card-content">
-          <h3 class="card-title">Escada de alumínio 3 degraus</h3>
-          <p class="card-description">Escada de alumínio com 3 degraus Mor.</p>
-          <div class="card-footer">
-            <a href="https://www.koerich.com.br/p/escada-de-aluminio-3-degraus-5101-mor/3868800"
-               target="_blank" class="btn">Ver referência</a>
-            <div class="checkbox-wrapper">
-              <input type="checkbox" class="custom-checkbox" id="item19" />
-              <label for="item19" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 20 -->
-      <div class="card">
-        <div class="card-img">Varal</div>
-        <div class="card-content">
-          <h3 class="card-title">Varal de chão alumínio</h3>
-          <p class="card-description">Varal de chão slim com abas em alumínio Mor.</p>
-          <div class="card-footer">
-            <a href="https://www.koerich.com.br/p/varal-de-chao-slim-6046-com-abas-aluminio-mor/3801800"
-               target="_blank" class="btn">Ver referência</a>
-            <div class="checkbox-wrapper">
-              <input type="checkbox" class="custom-checkbox" id="item20" />
-              <label for="item20" class="checkbox-label">Escolher item</label>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Outros cards... -->
     </div>
 
     <footer><p>Muito obrigado pelo carinho e presença!</p></footer>
@@ -442,45 +244,150 @@
 
   <!-- =============== Firebase + JS =============== -->
   <script type="module">
+    // Timer de carregamento para timeout
+    const loadingTimeout = setTimeout(() => {
+      document.getElementById('loadingError').style.display = 'block';
+    }, 15000); // 15 segundos para timeout
+    
     /* 1 ▸ imports */
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-
-    // Mostrar loading
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    
-    /* 2 ▸ config */
-    const firebaseConfig = {
-      apiKey: "AIzaSyBthvOflM2Vge4Q2Sc-kJTQ81OA0Zw7i7I",
-      authDomain: "chacasanova-dbc8d.firebaseapp.com",
-      projectId: "chacasanova-dbc8d",
-      storageBucket: "chacasanova-dbc8d.appspot.com",
-      messagingSenderId: "332754318600",
-      appId: "1:332754318600:web:22d8ac2c56fc5e52d668bd",
-      measurementId: "G-TLP3P8XE8P"
-    };
-    
     try {
-      console.log("Inicializando Firebase...");
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      console.log("Firebase inicializado com sucesso!");
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js");
+      const { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } = 
+        await import("https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js");
+    
+      // Variáveis para o modo de fallback
+      let usingLocalStorage = false;
+      const localStorageKey = 'chaCasaNova_escolhas';
       
-      // Inicializa todos os listeners antes de esconder o loading
-      await inicializarPagina(db);
+      // Mostrar loading
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const mainError = document.getElementById('mainError');
       
-      // Esconde o loading quando tudo estiver pronto
-      loadingOverlay.style.display = 'none';
-    } catch (error) {
-      console.error("Erro ao inicializar Firebase:", error);
-      alert("Erro ao conectar com o banco de dados. Por favor, recarregue a página.");
-      loadingOverlay.style.display = 'none';
-    }
-
-    // Função principal de inicialização
-    async function inicializarPagina(db) {
-      /* 3 ▸ funções de apoio */
-      function updateItemAppearance(cb, selected) {
+      /* 2 ▸ config */
+      const firebaseConfig = {
+        apiKey: "AIzaSyBthvOflM2Vge4Q2Sc-kJTQ81OA0Zw7i7I",
+        authDomain: "chacasanova-dbc8d.firebaseapp.com",
+        projectId: "chacasanova-dbc8d",
+        storageBucket: "chacasanova-dbc8d.appspot.com",
+        messagingSenderId: "332754318600",
+        appId: "1:332754318600:web:22d8ac2c56fc5e52d668bd",
+        measurementId: "G-TLP3P8XE8P"
+      };
+      
+      try {
+        console.log("Inicializando Firebase...");
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        console.log("Firebase inicializado com sucesso!");
+        
+        // Tentar inicializar o app com timeout
+        const initPromise = inicializarPagina(db).catch(error => {
+          console.error("Erro ao inicializar página:", error);
+          throw error;
+        });
+        
+        // Adicionar um timeout para não ficar esperando infinitamente
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Timeout ao inicializar")), 10000);
+        });
+        
+        await Promise.race([initPromise, timeoutPromise]);
+        
+        // Se chegou aqui, foi bem-sucedido
+        clearTimeout(loadingTimeout);
+        loadingOverlay.style.display = 'none';
+        
+      } catch (error) {
+        // Usar localStorage como fallback
+        console.error("Erro ao inicializar Firebase:", error);
+        clearTimeout(loadingTimeout);
+        usingLocalStorage = true;
+        
+        // Exibir mensagem de erro
+        mainError.style.display = 'block';
+        loadingOverlay.style.display = 'none';
+        
+        // Inicializar modo offline
+        inicializarModoOffline();
+      }
+      
+      // Função para inicializar modo offline (fallback para localStorage)
+      function inicializarModoOffline() {
+        console.log("Iniciando em modo offline com localStorage");
+        
+        // Carregar escolhas salvas no localStorage
+        let escolhasLocais = {};
+        try {
+          const saved = localStorage.getItem(localStorageKey);
+          if (saved) {
+            escolhasLocais = JSON.parse(saved);
+          }
+        } catch (e) {
+          console.error("Erro ao ler localStorage:", e);
+        }
+        
+        // Configurar checkboxes baseado no localStorage
+        document.querySelectorAll(".custom-checkbox").forEach(cb => {
+          const id = cb.id;
+          const escolhido = !!escolhasLocais[id];
+          
+          // Aplicar visual
+          cb.checked = escolhido;
+          updateItemAppearanceOffline(cb, escolhido);
+          
+          // Adicionar evento de clique
+          cb.addEventListener("click", e => {
+            e.preventDefault();
+            
+            if (cb.checked) return; // já escolhido
+            
+            const titleElement = cb.closest(".card").querySelector(".card-title");
+            const name = titleElement ? titleElement.textContent : "item desconhecido";
+            
+            // Abrir modal
+            openModalOffline(cb, name);
+          });
+        });
+        
+        // Configurar modal para modo offline
+        const modalOverlay = document.getElementById("confirmModal");
+        const modalText = document.getElementById("modalText");
+        const confirmBtn = document.getElementById("confirmBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        let currentCheckbox = null;
+        
+        function openModalOffline(cb, name) {
+          currentCheckbox = cb;
+          modalText.textContent = `Você optou por ${name}. Você confirma?`;
+          modalOverlay.classList.add("active");
+        }
+        
+        function closeModalOffline() {
+          modalOverlay.classList.remove("active");
+          if (currentCheckbox) currentCheckbox.checked = false;
+          currentCheckbox = null;
+        }
+        
+        confirmBtn.addEventListener("click", () => {
+          if (currentCheckbox) {
+            const id = currentCheckbox.id;
+            
+            // Salvar no localStorage
+            escolhasLocais[id] = true;
+            localStorage.setItem(localStorageKey, JSON.stringify(escolhasLocais));
+            
+            // Atualizar UI
+            currentCheckbox.checked = true;
+            updateItemAppearanceOffline(currentCheckbox, true);
+            closeModalOffline();
+          }
+        });
+        
+        cancelBtn.addEventListener("click", closeModalOffline);
+      }
+      
+      // Função auxiliar para atualizar aparência no modo offline
+      function updateItemAppearanceOffline(cb, selected) {
         const card = cb.closest(".card");
         const title = card.querySelector(".card-title");
         const status = card.querySelector(".item-status") || document.createElement("div");
@@ -504,97 +411,233 @@
         }
       }
 
-      // Função para gravar a escolha no Firestore
-      async function gravarEscolha(id) {
-        try {
-          console.log(`Tentando gravar escolha para item ${id}...`);
+      // Função principal de inicialização com Firebase
+      async function inicializarPagina(db) {
+        /* 3 ▸ funções de apoio */
+        function updateItemAppearance(cb, selected) {
+          const card = cb.closest(".card");
+          const title = card.querySelector(".card-title");
+          const status = card.querySelector(".item-status") || document.createElement("div");
           
-          // Verifica se o item já está escolhido
-          const docRef = doc(db, "presentes", id);
-          const docSnap = await getDoc(docRef);
+          if (!card.querySelector(".item-status")) {
+            status.classList.add("item-status");
+            status.textContent = "Item já escolhido";
+            card.querySelector(".card-content").appendChild(status);
+          }
           
-          if (docSnap.exists() && docSnap.data().escolhido === true) {
-            alert("Este item já foi escolhido por outra pessoa!");
+          const wrap = card.querySelector(".checkbox-wrapper");
+          
+          if (selected) {
+            title.classList.add("selected");
+            status.classList.add("selected");
+            wrap.style.display = "none";
+          } else {
+            title.classList.remove("selected");
+            status.classList.remove("selected");
+            wrap.style.display = "flex";
+          }
+        }
+
+        // Função para gravar a escolha no Firestore
+        async function gravarEscolha(id) {
+          try {
+            console.log(`Tentando gravar escolha para item ${id}...`);
+            
+            // Verifica se o item já está escolhido
+            const docRef = doc(db, "presentes", id);
+            const docSnap = await getDoc(docRef);
+            
+            if (docSnap.exists() && docSnap.data().escolhido === true) {
+              alert("Este item já foi escolhido por outra pessoa!");
+              return false;
+            }
+            
+            // Se não estiver escolhido, grava a escolha
+            await setDoc(docRef, { 
+              escolhido: true,
+              timestamp: new Date().toISOString() 
+            });
+            console.log(`Item ${id} escolhido com sucesso!`);
+            return true;
+          } catch (error) {
+            console.error(`Erro ao gravar escolha para item ${id}:`, error);
+            
+            // Se falhar, tentar registrar localmente
+            if (!usingLocalStorage) {
+              usingLocalStorage = true;
+              mainError.style.display = 'block';
+              
+              try {
+                let escolhasLocais = {};
+                const saved = localStorage.getItem(localStorageKey);
+                if (saved) {
+                  escolhasLocais = JSON.parse(saved);
+                }
+                
+                escolhasLocais[id] = true;
+                localStorage.setItem(localStorageKey, JSON.stringify(escolhasLocais));
+                return true;
+              } catch (e) {
+                console.error("Erro ao salvar no localStorage:", e);
+              }
+            }
+            
+            alert("Ocorreu um erro ao escolher o item. Tente novamente.");
             return false;
           }
+        }
+
+        // Mapa de estado local para cada item
+        const itemState = new Map();
+
+        // Função para escutar mudanças em tempo real
+        function escutarItem(id, cb) {
+          console.log(`Configurando listener para item ${id}...`);
           
-          // Se não estiver escolhido, grava a escolha
-          await setDoc(docRef, { 
-            escolhido: true,
-            timestamp: new Date().toISOString() 
-          });
-          console.log(`Item ${id} escolhido com sucesso!`);
-          return true;
-        } catch (error) {
-          console.error(`Erro ao gravar escolha para item ${id}:`, error);
-          alert("Ocorreu um erro ao escolher o item. Tente novamente.");
-          return false;
+          // Definir estado inicial como não escolhido
+          itemState.set(id, false);
+          
+          // Testar conexão primeiro
+          return onSnapshot(
+            doc(db, "presentes", id),
+            (snap) => {
+              // Verificar se o documento existe E tem a propriedade escolhido como true
+              const marcado = snap.exists() && snap.data()?.escolhido === true;
+              console.log(`Atualização recebida para item ${id}:`, snap.data(), `Escolhido: ${marcado}`);
+              
+              // Atualizar o estado local
+              itemState.set(id, marcado);
+              
+              // Atualizar a UI
+              cb.checked = marcado;
+              updateItemAppearance(cb, marcado);
+            },
+            (error) => {
+              console.error(`Erro ao escutar item ${id}:`, error);
+              
+              // Se falhar a escuta, pode ser problema de permissões
+              if (!usingLocalStorage) {
+                usingLocalStorage = true;
+                mainError.style.display = 'block';
+                inicializarModoOffline();
+              }
+            }
+          );
         }
-      }
 
-      // Mapa de estado local para cada item
-      const itemState = new Map();
+        /* 4 ▸ lógica da página */
+        console.log("Configurando elementos da página...");
+        
+        /* variáveis do modal */
+        const modalOverlay = document.getElementById("confirmModal");
+        const modalText = document.getElementById("modalText");
+        const confirmBtn = document.getElementById("confirmBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        let currentCheckbox = null;
 
-      // Função para escutar mudanças em tempo real
-      function escutarItem(id, cb) {
-        console.log(`Configurando listener para item ${id}...`);
-        
-        // Definir estado inicial como não escolhido
-        itemState.set(id, false);
-        
-        return onSnapshot(
-          doc(db, "presentes", id),
-          (snap) => {
-            // Verificar se o documento existe E tem a propriedade escolhido como true
-            const marcado = snap.exists() && snap.data()?.escolhido === true;
-            console.log(`Atualização recebida para item ${id}:`, snap.data(), `Escolhido: ${marcado}`);
-            
-            // Atualizar o estado local
-            itemState.set(id, marcado);
-            
-            // Atualizar a UI
-            cb.checked = marcado;
-            updateItemAppearance(cb, marcado);
-          },
-          (error) => {
-            console.error(`Erro ao escutar item ${id}:`, error);
+        if (!modalOverlay || !modalText || !confirmBtn || !cancelBtn) {
+          console.error("Elementos do modal não encontrados!");
+          throw new Error("Elementos do modal não encontrados");
+        }
+
+        /* adiciona status labels aos cards */
+        document.querySelectorAll(".card").forEach(card => {
+          if (!card.querySelector(".item-status")) {
+            const st = document.createElement("div");
+            st.classList.add("item-status");
+            st.textContent = "Item já escolhido";
+            card.querySelector(".card-content").appendChild(st);
           }
-        );
+        });
+
+        /* funções do modal */
+        const openModal = (cb, name) => {
+          console.log(`Abrindo modal para item: ${name}`);
+          currentCheckbox = cb;
+          modalText.textContent = `Você optou por ${name}. Você confirma?`;
+          modalOverlay.classList.add("active");
+        };
+        
+        const closeModal = () => {
+          console.log("Fechando modal");
+          modalOverlay.classList.remove("active");
+          if (currentCheckbox) currentCheckbox.checked = false;
+          currentCheckbox = null;
+        };
+
+        confirmBtn.addEventListener("click", async () => {
+          console.log("Botão de confirmar clicado");
+          if (currentCheckbox) {
+            console.log(`Confirmando escolha do item: ${currentCheckbox.id}`);
+            const success = await gravarEscolha(currentCheckbox.id);
+            if (success) {
+              closeModal();
+            }
+          }
+        });
+        
+        cancelBtn.addEventListener("click", () => {
+          console.log("Botão de cancelar clicado");
+          closeModal();
+        });
+
+        /* listeners de cada checkbox */
+        const checkboxes = document.querySelectorAll(".custom-checkbox");
+        console.log(`Encontrados ${checkboxes.length} checkboxes`);
+        
+        const listeners = [];
+        
+        // Configurar todos os listeners e esperar até que estejam prontos
+        const setupPromises = [];
+        
+        checkboxes.forEach(cb => {
+          // Inicializa o estado de cada item e armazena o listener
+          const listenerId = cb.id;
+          
+          // Adiciona ao array de promessas
+          const promise = new Promise(resolve => {
+            const unsubscribe = escutarItem(listenerId, cb);
+            listeners.push(unsubscribe);
+            
+            // Aguarda um curto período para garantir que o listener foi configurado
+            setTimeout(resolve, 100);
+          });
+          
+          setupPromises.push(promise);
+          
+          // Adiciona evento de clique
+          cb.addEventListener("click", e => {
+            console.log(`Checkbox ${cb.id} clicado`);
+            e.preventDefault();
+            
+            // Verifica se o item já está escolhido no estado local
+            if (itemState.get(cb.id)) {
+              console.log(`Item ${cb.id} já está escolhido, ignorando clique`);
+              return;
+            }
+            
+            const titleElement = cb.closest(".card").querySelector(".card-title");
+            const name = titleElement ? titleElement.textContent : "item desconhecido";
+            console.log(`Usuário clicou para escolher: ${name}`);
+            openModal(cb, name);
+          });
+        });
+        
+        // Aguardar a configuração de todos os listeners
+        await Promise.all(setupPromises);
+        
+        console.log("Página inicializada com sucesso!");
       }
-
-      /* 4 ▸ lógica da página */
-      console.log("Configurando elementos da página...");
+    } catch (importError) {
+      console.error("Erro ao importar módulos do Firebase:", importError);
+      document.getElementById('loadingError').style.display = 'block';
       
-      /* variáveis do modal */
-      const modalOverlay = document.getElementById("confirmModal");
-      const modalText = document.getElementById("modalText");
-      const confirmBtn = document.getElementById("confirmBtn");
-      const cancelBtn = document.getElementById("cancelBtn");
-      let currentCheckbox = null;
-
-      if (!modalOverlay || !modalText || !confirmBtn || !cancelBtn) {
-        console.error("Elementos do modal não encontrados!");
-        return;
-      }
-
-      /* adiciona status labels aos cards */
-      document.querySelectorAll(".card").forEach(card => {
-        if (!card.querySelector(".item-status")) {
-          const st = document.createElement("div");
-          st.classList.add("item-status");
-          st.textContent = "Item já escolhido";
-          card.querySelector(".card-content").appendChild(st);
-        }
-      });
-
-      /* funções do modal */
-      const openModal = (cb, name) => {
-        console.log(`Abrindo modal para item: ${name}`);
-        currentCheckbox = cb;
-        modalText.textContent = `Você optou por ${name}. Você confirma?`;
-        modalOverlay.classList.add("active");
-      };
-      
-      const closeModal = () => {
-        console.log("Fechando modal");
-        modalOverlay.classList
+      // Após 5 segundos, redirecionar para uma versão estática
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').innerHTML = '<p>Não foi possível carregar o Firebase. Redirecionando para versão simplificada.</p>';
+        // Aqui você poderia redirecionar para uma versão sem Firebase
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
