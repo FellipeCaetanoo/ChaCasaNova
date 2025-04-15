@@ -195,7 +195,7 @@
   <script type="module">
     /* 1 ▸ imports */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
     /* 2 ▸ config */
     const firebaseConfig = {
@@ -209,82 +209,132 @@
     };
     
     // Inicializar Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    /* 3 ▸ funções de apoio */
-    function updateItemAppearance(cb, selected) {
-      const card = cb.closest(".card");
-      const title = card.querySelector(".card-title");
-      const status = card.querySelector(".item-status") || document.createElement("div");
+    try {
+      console.log("Inicializando Firebase...");
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      console.log("Firebase inicializado com sucesso!");
       
-      if (!card.querySelector(".item-status")) {
-        status.classList.add("item-status");
-        status.textContent = "Item já escolhido";
-        card.querySelector(".card-content").appendChild(status);
-      }
-      
-      const wrap = card.querySelector(".checkbox-wrapper");
-      
-      if (selected) {
-        title.classList.add("selected");
-        status.classList.add("selected");
-        wrap.style.display = "none";
-      } else {
-        title.classList.remove("selected");
-        status.classList.remove("selected");
-        wrap.style.display = "flex";
-      }
+      // Inicializa a página quando o Firebase estiver pronto
+      inicializarPagina(db);
+    } catch (error) {
+      console.error("Erro ao inicializar Firebase:", error);
+      alert("Erro ao conectar com o banco de dados. Por favor, recarregue a página.");
     }
 
-    // Função para gravar a escolha no Firestore
-    async function gravarEscolha(id) {
-      try {
-        // Verifica se o item já está escolhido
-        const docRef = doc(db, "presentes", id);
-        const docSnap = await getDoc(docRef);
+    // Função principal de inicialização
+    function inicializarPagina(db) {
+      /* 3 ▸ funções de apoio */
+      function updateItemAppearance(cb, selected) {
+        const card = cb.closest(".card");
+        const title = card.querySelector(".card-title");
+        const status = card.querySelector(".item-status") || document.createElement("div");
         
-        if (docSnap.exists() && docSnap.data().escolhido === true) {
-          alert("Este item já foi escolhido por outra pessoa!");
+        if (!card.querySelector(".item-status")) {
+          status.classList.add("item-status");
+          status.textContent = "Item já escolhido";
+          card.querySelector(".card-content").appendChild(status);
+        }
+        
+        const wrap = card.querySelector(".checkbox-wrapper");
+        
+        if (selected) {
+          title.classList.add("selected");
+          status.classList.add("selected");
+          wrap.style.display = "none";
+        } else {
+          title.classList.remove("selected");
+          status.classList.remove("selected");
+          wrap.style.display = "flex";
+        }
+      }
+
+      // Função para garantir que a coleção 'presentes' exista
+      async function garantirColecaoPresentes() {
+        try {
+          // Tenta acessar um documento na coleção para garantir que ela exista
+          const docRef = doc(db, "presentes", "item1");
+          const docSnap = await getDoc(docRef);
+          
+          // Se o documento não existir, cria a coleção com um documento inicial
+          if (!docSnap.exists()) {
+            console.log("Criando coleção 'presentes'...");
+            await setDoc(docRef, { inicializado: true });
+            console.log("Coleção 'presentes' criada com sucesso!");
+          }
+          return true;
+        } catch (error) {
+          console.error("Erro ao garantir coleção 'presentes':", error);
           return false;
         }
-        
-        // Se não estiver escolhido, grava a escolha
-        await setDoc(docRef, { 
-          escolhido: true,
-          timestamp: new Date().toISOString() 
-        });
-        return true;
-      } catch (error) {
-        console.error("Erro ao gravar escolha:", error);
-        alert("Ocorreu um erro ao escolher o item. Tente novamente.");
-        return false;
       }
-    }
 
-    // Função para escutar mudanças em tempo real
-    function escutarItem(id, cb) {
-      return onSnapshot(
-        doc(db, "presentes", id),
-        (snap) => {
-          const marcado = snap.exists() && snap.data()?.escolhido === true;
-          cb.checked = marcado;
-          updateItemAppearance(cb, marcado);
-        },
-        (error) => {
-          console.error(`Erro ao escutar item ${id}:`, error);
+      // Função para gravar a escolha no Firestore
+      async function gravarEscolha(id) {
+        try {
+          console.log(`Tentando gravar escolha para item ${id}...`);
+          
+          // Verifica se a coleção existe
+          const colecaoExiste = await garantirColecaoPresentes();
+          if (!colecaoExiste) {
+            alert("Erro ao acessar o banco de dados. Tente novamente.");
+            return false;
+          }
+          
+          // Verifica se o item já está escolhido
+          const docRef = doc(db, "presentes", id);
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists() && docSnap.data().escolhido === true) {
+            alert("Este item já foi escolhido por outra pessoa!");
+            return false;
+          }
+          
+          // Se não estiver escolhido, grava a escolha
+          await setDoc(docRef, { 
+            escolhido: true,
+            timestamp: new Date().toISOString() 
+          });
+          console.log(`Item ${id} escolhido com sucesso!`);
+          return true;
+        } catch (error) {
+          console.error(`Erro ao gravar escolha para item ${id}:`, error);
+          alert("Ocorreu um erro ao escolher o item. Tente novamente.");
+          return false;
         }
-      );
-    }
+      }
 
-    /* 4 ▸ lógica da página */
-    document.addEventListener("DOMContentLoaded", () => {
+      // Função para escutar mudanças em tempo real
+      function escutarItem(id, cb) {
+        console.log(`Configurando listener para item ${id}...`);
+        return onSnapshot(
+          doc(db, "presentes", id),
+          (snap) => {
+            console.log(`Atualização recebida para item ${id}:`, snap.data());
+            const marcado = snap.exists() && snap.data()?.escolhido === true;
+            cb.checked = marcado;
+            updateItemAppearance(cb, marcado);
+          },
+          (error) => {
+            console.error(`Erro ao escutar item ${id}:`, error);
+          }
+        );
+      }
+
+      /* 4 ▸ lógica da página */
+      console.log("Configurando elementos da página...");
+      
       /* variáveis do modal */
       const modalOverlay = document.getElementById("confirmModal");
       const modalText = document.getElementById("modalText");
       const confirmBtn = document.getElementById("confirmBtn");
       const cancelBtn = document.getElementById("cancelBtn");
       let currentCheckbox = null;
+
+      if (!modalOverlay || !modalText || !confirmBtn || !cancelBtn) {
+        console.error("Elementos do modal não encontrados!");
+        return;
+      }
 
       /* adiciona status labels aos cards */
       document.querySelectorAll(".card").forEach(card => {
@@ -298,19 +348,23 @@
 
       /* funções do modal */
       const openModal = (cb, name) => {
+        console.log(`Abrindo modal para item: ${name}`);
         currentCheckbox = cb;
         modalText.textContent = `Você optou por ${name}. Você confirma?`;
         modalOverlay.classList.add("active");
       };
       
       const closeModal = () => {
+        console.log("Fechando modal");
         modalOverlay.classList.remove("active");
         if (currentCheckbox) currentCheckbox.checked = false;
         currentCheckbox = null;
       };
 
       confirmBtn.addEventListener("click", async () => {
+        console.log("Botão de confirmar clicado");
         if (currentCheckbox) {
+          console.log(`Confirmando escolha do item: ${currentCheckbox.id}`);
           const success = await gravarEscolha(currentCheckbox.id);
           if (success) {
             closeModal();
@@ -318,22 +372,38 @@
         }
       });
       
-      cancelBtn.addEventListener("click", closeModal);
+      cancelBtn.addEventListener("click", () => {
+        console.log("Botão de cancelar clicado");
+        closeModal();
+      });
 
       /* listeners de cada checkbox */
-      document.querySelectorAll(".custom-checkbox").forEach(cb => {
+      const checkboxes = document.querySelectorAll(".custom-checkbox");
+      console.log(`Encontrados ${checkboxes.length} checkboxes`);
+      
+      checkboxes.forEach(cb => {
         // Inicializa estado de cada item
         escutarItem(cb.id, cb);
         
         // Adiciona evento de clique
         cb.addEventListener("click", e => {
+          console.log(`Checkbox ${cb.id} clicado`);
           e.preventDefault();
-          if (cb.checked) return; // já reservado
-          const name = cb.closest(".card").querySelector(".card-title").textContent;
+          
+          if (cb.checked) {
+            console.log(`Item ${cb.id} já está escolhido, ignorando clique`);
+            return;
+          }
+          
+          const titleElement = cb.closest(".card").querySelector(".card-title");
+          const name = titleElement ? titleElement.textContent : "item desconhecido";
+          console.log(`Usuário clicou para escolher: ${name}`);
           openModal(cb, name);
         });
       });
-    });
+      
+      console.log("Página inicializada com sucesso!");
+    }
   </script>
 </body>
 </html>
