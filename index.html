@@ -6,272 +6,95 @@
   <title>Chá de Casa Nova</title>
 
   <style>
-    /* Estilos básicos com melhor compatibilidade */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      color: #6b696a;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
+    :root {
+      --cinza: #6b696a;
+      --verde-claro: #a3b899;
+      --fundo: #f5f5f5;
+      --branco: #ffffff;
+      --bege:  #e8e0d0;
+      --madeira:#c8a887;
     }
-    
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    
-    h1 {
-      font-size: 2rem;
-      font-weight: 300;
-      margin: 10px 0;
-    }
-    
-    .subtitle {
-      font-size: 1.2rem;
-      font-weight: 300;
-      margin-bottom: 20px;
-    }
-    
-    .theme-info {
-      background: #e8e0d0;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 25px;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    .color-palette {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 10px 0;
-    }
-    
-    .color-swatch {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .color-swatch span {
-      font-size: 0.7rem;
-      color: #444;
-      background: rgba(255,255,255,0.8);
-      padding: 2px 6px;
-      border-radius: 10px;
-    }
-    
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 20px;
-    }
-    
-    .card {
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
-    }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-    
-    .card-img {
-      height: 140px;
-      background: #a3b899;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    
-    .card-content {
-      padding: 15px;
-      position: relative;
-    }
-    
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 5px;
-    }
-    
-    .card-title.selected {
-      text-decoration: line-through;
-      color: #999;
-    }
-    
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 15px;
-    }
-    
-    .btn {
-      display: inline-block;
-      background: #6b696a;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: background 0.3s;
-    }
-    
-    .btn:hover {
-      background: #555;
-    }
-    
-    .checkbox-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .custom-checkbox {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #6b696a;
-      border-radius: 4px;
-      cursor: pointer;
-      position: relative;
-      transition: 0.3s;
-    }
-    
-    .custom-checkbox:checked {
-      background: #a3b899;
-      border-color: #a3b899;
-    }
-    
-    .custom-checkbox:checked::after {
-      content: '✓';
-      color: #fff;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    
-    .checkbox-label {
-      font-size: 0.8rem;
-      color: #888;
-    }
-    
-    .item-status {
-      position: absolute;
-      top: 12px;
-      right: 15px;
-      color: #a3b899;
-      font-weight: 500;
-      font-size: 0.9rem;
-      display: none;
-    }
-    
-    .item-status.selected {
-      display: block;
-    }
+    body{font-family:"Helvetica Neue",Arial,sans-serif;background:var(--fundo);color:var(--cinza);margin:0;line-height:1.6;}
+    .container{max-width:1000px;margin:0 auto;padding:2rem;}
+    header{text-align:center;margin-bottom:3rem;}
+    h1{font-size:2.5rem;font-weight:300;margin:.5rem 0;}
+    .subtitle{font-size:1.2rem;font-weight:300;margin-bottom:2rem;}
 
-    /* Estilos para o modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.3s;
+    .theme-info{background:var(--bege);border-radius:8px;padding:1.5rem;margin-bottom:2.5rem;text-align:center;box-shadow:0 4px 8px rgba(0,0,0,.05);}
+    .theme-title{font-size:1.1rem;font-weight:500;margin-bottom:1rem;}
+    .color-palette{display:flex;justify-content:center;gap:1rem;margin:1rem 0;}
+    .color-swatch{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,.1);}
+    .color-swatch span{font-size:.8rem;color:#444;background:rgba(255,255,255,.8);padding:2px 8px;border-radius:10px;}
+    .theme-description{font-size:.95rem;max-width:80%;margin:0 auto;color:#555;}
+
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;}
+    .card{background:var(--branco);border-radius:8px;overflow:hidden;box-shadow:0 4px 8px rgba(0,0,0,.05);transition:.3s;position:relative;}
+    .card:hover{transform:translateY(-5px);box-shadow:0 8px 16px rgba(0,0,0,.1);}
+    .card-img{height:180px;background:var(--verde-claro);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;}
+    .card-content{padding:1.5rem;position:relative;padding-top:2.5rem;} /* Modificado: padding-top aumentado */
+    .card-title{font-size:1.2rem;font-weight:500;margin-bottom:.5rem;transition:text-decoration .3s;}
+    .card-title.selected{text-decoration:line-through;color:#777;} /* Modificado: cor mais escura */
+    .card-description{font-size:.9rem;color:#888;margin-bottom:1.5rem;}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;}
+    .btn{display:inline-block;background:var(--cinza);color:#fff;padding:.6rem 1.2rem;border-radius:4px;text-decoration:none;font-size:.9rem;transition:.3s;}
+    .btn:hover{background:#555;}
+    .checkbox-wrapper{display:flex;align-items:center;gap:.5rem;}
+    .custom-checkbox{-webkit-appearance:none;appearance:none;width:20px;height:20px;border:2px solid var(--cinza);border-radius:4px;cursor:pointer;position:relative;transition:.3s;}
+    .custom-checkbox:checked{background:var(--verde-claro);border-color:var(--verde-claro);}
+    .custom-checkbox:checked::after{content:'✓';color:#fff;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+    .checkbox-label{font-size:.8rem;color:#888;}
+    .item-status{
+      position:absolute;
+      top:1.2rem; /* Modificado: de 3.2rem para 1.2rem */
+      left:1.5rem;
+      font-size:.9rem;
+      font-weight:500;
+      color:var(--verde-claro);
+      display:none;
+      background-color:white; /* Adicionado: fundo branco */
+      padding:2px 8px; /* Adicionado: padding */
+      border-radius:4px; /* Adicionado: cantos arredondados */
+      box-shadow:0 1px 3px rgba(0,0,0,0.1); /* Adicionado: sombra suave */
     }
-    
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .modal {
-      background: #fff;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 400px;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-    
-    .modal h3 {
-      margin: 0 0 10px 0;
-      color: #6b696a;
-    }
-    
-    .modal-actions {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 15px;
-    }
-    
-    .confirm-btn {
-      background: #a3b899;
-    }
-    
-    .confirm-btn:hover {
-      background: #8fa788;
-    }
-    
-    .cancel-btn {
-      background: #eee;
-      color: #666;
-    }
-    
-    .cancel-btn:hover {
-      background: #ddd;
-    }
-    
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      color: #888;
-      font-size: 0.9rem;
-    }
+    .item-status.selected{display:block;}
+
+    /* modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:.3s;}
+    .modal-overlay.active{opacity:1;visibility:visible;}
+    .modal{background:#fff;border-radius:8px;width:90%;max-width:400px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.15);text-align:center;}
+    .modal h3{margin:0;color:var(--cinza);font-weight:500;}
+    .modal-actions{display:flex;justify-content:center;gap:1rem;margin-top:1.5rem;}
+    .modal-btn{padding:.6rem 1.8rem;border-radius:4px;border:none;font-size:.9rem;cursor:pointer;transition:.3s;}
+    .confirm-btn{background:var(--verde-claro);color:#fff;}
+    .confirm-btn:hover{background:#8fa788;}
+    .cancel-btn{background:#eee;color:#666;}
+    .cancel-btn:hover{background:#ddd;}
+
+    footer{text-align:center;margin-top:4rem;padding-top:2rem;border-top:1px solid #eee;color:#888;font-size:.9rem;}
     
     /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: var(--verde-claro);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
     .loading-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background: rgba(255,255,255,0.9);
       display: flex;
       flex-direction: column;
@@ -280,21 +103,7 @@
       z-index: 2000;
     }
     
-    .spinner {
-      border: 3px solid rgba(0,0,0,0.1);
-      border-radius: 50%;
-      border-top: 3px solid #a3b899;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 10px;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
+    /* Error message */
     .error-message {
       color: #d9534f;
       padding: 1rem;
@@ -303,7 +112,17 @@
       border-radius: 4px;
       background-color: #f9f2f4;
       text-align: center;
-      display: none;
+    }
+    
+    /* Botão de recarregar */
+    .reload-btn {
+      background: var(--verde-claro);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 1rem;
     }
   </style>
 </head>
@@ -312,328 +131,788 @@
   <!-- Loading overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <div>Carregando itens...</div>
+    <div class="loading-text">Carregando itens...</div>
+    <div id="loadingError" style="display: none; margin-top: 20px;">
+      <p class="error-message">Erro ao carregar dados. Verifique sua conexão.</p>
+      <button class="reload-btn" onclick="window.location.reload()">Tentar novamente</button>
+    </div>
   </div>
 
   <div class="container">
-    <!-- Cabeçalho -->
+    <!-- ---------- cabeçalho ---------- -->
     <header>
       <h1>Chá de Casa Nova – Luiza &amp; Fellipe</h1>
       <p class="subtitle">Marque o item que você gostaria de levar para nossa nova casa</p>
 
       <div class="theme-info">
-        <h3>Paleta de cores da nossa casa</h3>
+        <div class="theme-title">Paleta de cores da nossa casa</div>
         <div class="color-palette">
           <div class="color-swatch" style="background:#e8e0d0;"><span>Creme</span></div>
           <div class="color-swatch" style="background:#d8cdb5;"><span>Bege</span></div>
           <div class="color-swatch" style="background:#c8a887;"><span>Madeira</span></div>
           <div class="color-swatch" style="background:#b6a284;"><span>Bambu</span></div>
         </div>
-        <p>
+        <p class="theme-description">
           Vamos optar por decorações em tons neutros, com cores creme/bege e também madeira e bambu.
         </p>
       </div>
     </header>
 
-    <!-- Mensagem de erro -->
-    <div id="errorMessage" class="error-message">
-      Houve um problema ao conectar com o banco de dados. Suas escolhas serão salvas localmente.
+    <!-- Mensagem de erro para exibir problemas de Firebase -->
+    <div id="mainError" class="error-message" style="display: none;">
+      <p>Não foi possível conectar ao banco de dados. Suas escolhas serão salvas localmente.</p>
     </div>
 
-    <!-- Lista de itens -->
-    <div class="card-grid" id="itemGrid"></div>
+    <!-- ---------- grid de cards ---------- -->
+    <div class="card-grid">
+      <!-- 1 -->
+      <div class="card">
+        <div class="card-img">Panelas</div>
+        <div class="card-content">
+          <h3 class="card-title">Conjunto de panelas</h3>
+          <p class="card-description">Tramontina</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item1" />
+              <label for="item1" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 2 -->
+      <div class="card">
+        <div class="card-img">Talheres</div>
+        <div class="card-content">
+          <h3 class="card-title">Talheres</h3>
+          <p class="card-description">Preto ou Prata</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item2" />
+              <label for="item2" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 3 -->
+      <div class="card">
+        <div class="card-img">Café</div>
+        <div class="card-content">
+          <h3 class="card-title">Prensa francesa</h3>
+          <p class="card-description">Para preparar café de forma artesanal</p>
+          <div class="card-footer">
+            <a href="https://www.havan.com.br/cafeteira-francesa-de-prensa-hauskraft-600ml-inox/p"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item3" />
+              <label for="item3" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 4 -->
+      <div class="card">
+        <div class="card-img">Churrasco</div>
+        <div class="card-content">
+          <h3 class="card-title">Kit churrasco</h3>
+          <p class="card-description">Kit churrasco Tramontina com 3 peças</p>
+          <div class="card-footer">
+            <a href="https://www.magazineluiza.com.br/kit-churrasco-tramontina-10239753-3-pecas/p/238299100"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item4" />
+              <label for="item4" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 5 -->
+      <div class="card">
+        <div class="card-img">Espetos</div>
+        <div class="card-content">
+          <h3 class="card-title">Espetos para churrasqueira</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item5" />
+              <label for="item5" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 6 -->
+      <div class="card">
+        <div class="card-img">Grelha</div>
+        <div class="card-content">
+          <h3 class="card-title">Grelha para churrasqueira</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item6" />
+              <label for="item6" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 7 -->
+      <div class="card">
+        <div class="card-img">Dosador</div>
+        <div class="card-content">
+          <h3 class="card-title">Dosador Duplo e Colher bailarina</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item7" />
+              <label for="item7" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 8 -->
+      <div class="card">
+        <div class="card-img">Balde</div>
+        <div class="card-content">
+          <h3 class="card-title">Balde de gelo com pegador</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item8" />
+              <label for="item8" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 9 -->
+      <div class="card">
+        <div class="card-img">Pratos</div>
+        <div class="card-content">
+          <h3 class="card-title">Pratos</h3>
+          <p class="card-description">Rasos e fundos</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item9" />
+              <label for="item9" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 10 -->
+      <div class="card">
+        <div class="card-img">Bowls</div>
+        <div class="card-content">
+          <h3 class="card-title">Bowls</h3>
+          <p class="card-description">Tigelas para servir alimentos</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item10" />
+              <label for="item10" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 11 -->
+      <div class="card">
+        <div class="card-img">Xícaras</div>
+        <div class="card-content">
+          <h3 class="card-title">Xícaras</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item11" />
+              <label for="item11" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 12 -->
+      <div class="card">
+        <div class="card-img">Potes</div>
+        <div class="card-content">
+          <h3 class="card-title">Potes para armazenamento</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item12" />
+              <label for="item12" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 13 -->
+      <div class="card">
+        <div class="card-img">Mesa</div>
+        <div class="card-content">
+          <h3 class="card-title">Jogo americano</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item13" />
+              <label for="item13" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 14 -->
+      <div class="card">
+        <div class="card-img">Centrífuga</div>
+        <div class="card-content">
+          <h3 class="card-title">Centrífuga de salada</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <a href="https://www.angeloni.com.br/eletro/centrifuga-para-salada-acasa-4024412/p?idsku=543&utm_source=google&utm_medium=cpc&utm_campaign=CA_PRF_Venda_ELETRO_AlwaysOn_N_Bazar_PMAX_N&gad_source=1&gclid=CjwKCAjw5PK_BhBBEiwAL7GTPXrW72wS0JZYT7AMdPAAD_MwhAT9eoDYgLPRFl7nrGHcZdltm-WwTxoCSSoQAvD_BwE"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item14" />
+              <label for="item14" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 15 -->
+      <div class="card">
+        <div class="card-img">Sanduicheira</div>
+        <div class="card-content">
+          <h3 class="card-title">Sanduicheira</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <a href="https://www.havan.com.br/sanduicheira-eletrica-cadence-click-san400/p"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item15" />
+              <label for="item15" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 16 -->
+      <div class="card">
+        <div class="card-img">Air Fryer</div>
+        <div class="card-content">
+          <h3 class="card-title">Air Fryer</h3>
+          <p class="card-description">Modelo Philco</p>
+          <div class="card-footer">
+            <a href="https://www.casasbahia.com.br/fritadeira-eletrica-sem-oleo-air-fry-philco-oven-pfr2200p-12l-preta/p/55020322?utm_medium=cpc&utm_source=GP_PLA&IdSku=55020322&idLojista=10037&tipoLojista=1P&gclsrc=aw.ds&&utm_campaign=cb_b2c_gg_pmax_core_elpo_fritadeira&gad_source=1&gclid=CjwKCAjw5PK_BhBBEiwAL7GTPZyQ5thOKB8xnOzDLxIJHM-j6GGrFmqQhCZc85V48z_yvX1Uwp7bGRoCcJAQAvD_BwE"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item16" />
+              <label for="item16" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 17 -->
+      <div class="card">
+        <div class="card-img">Liquidificador</div>
+        <div class="card-content">
+          <h3 class="card-title">Liquidificador</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item17" />
+              <label for="item17" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 18 -->
+      <div class="card">
+        <div class="card-img">Mixer</div>
+        <div class="card-content">
+          <h3 class="card-title">Mix para triturar alimentos</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <a href="https://www.amazon.com.br/Mixer-velocidades-Bmx400-Preto-Britânia/dp/B097KQWJKZ/ref=asc_df_B097KQWJKZ?mcid=56139caa279e3d4aa11400210e6d3b38&tag=googleshopp00-20&linkCode=df0&hvadid=709964506256&hvpos=&hvnetw=g&hvrand=4160600755965411594&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9102238&hvtargid=pla-1392089775039&language=pt_BR&gad_source=1&th=1"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item18" />
+              <label for="item18" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 19 -->
+      <div class="card">
+        <div class="card-img">Cortina</div>
+        <div class="card-content">
+          <h3 class="card-title">Cortina vuau porta janela</h3>
+          <p class="card-description">Medir</p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item19" />
+              <label for="item19" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 20 -->
+      <div class="card">
+        <div class="card-img">Quadros</div>
+        <div class="card-content">
+          <h3 class="card-title">Quadros/decoração parede</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item20" />
+              <label for="item20" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 21 -->
+      <div class="card">
+        <div class="card-img">Decoração</div>
+        <div class="card-content">
+          <h3 class="card-title">Decoração para sala</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <div class="checkbox-wrapper" style="margin-left:auto;">
+              <input type="checkbox" class="custom-checkbox" id="item21" />
+              <label for="item21" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 22 -->
+      <div class="card">
+        <div class="card-img">Escada</div>
+        <div class="card-content">
+          <h3 class="card-title">Escada de alumínio 3 degraus</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <a href="https://www.koerich.com.br/p/escada-de-aluminio-3-degraus-5101-mor/3868800?gad_source=1&gbraid=0AAAAADtBv5x0g21IwzsghYH4rqz4GBeVq&gclid=CjwKCAjw5PK_BhBBEiwAL7GTPQCATR5_0G-mU_Fu2w82zuqs21UynAAlQFfOqtewQo_try9CANGI2xoC44cQAvD_BwE"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item22" />
+              <label for="item22" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 23 -->
+      <div class="card">
+        <div class="card-img">Varal</div>
+        <div class="card-content">
+          <h3 class="card-title">Varal de chão alumínio</h3>
+          <p class="card-description"></p>
+          <div class="card-footer">
+            <a href="https://www.koerich.com.br/p/varal-de-chao-slim-6046-com-abas-aluminio-mor/3801800?gad_source=1&gbraid=0AAAAADtBv5x0g21IwzsghYH4rqz4GBeVq&gclid=CjwKCAjw5PK_BhBBEiwAL7GTPZbej7a9J00SQqiz8f0UdFOivPP2q_Xgk1kuclkb1tb6gujI9ed92RoCfGwQAvD_BwE"
+               target="_blank" class="btn">Ver referência</a>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="custom-checkbox" id="item23" />
+              <label for="item23" class="checkbox-label">Escolher item</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <footer>
-      <p>Muito obrigado pelo carinho e presença!</p>
-    </footer>
+    <footer><p>Muito obrigado pelo carinho e presença!</p></footer>
   </div>
 
   <!-- Modal de confirmação -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal">
       <h3>Confirmação</h3>
-      <p id="modalText">Você optou por [item]. Você confirma?</p>
+      <p class="modal-text" id="modalText">Você optou por [item]. Você confirma?</p>
       <div class="modal-actions">
-        <button class="btn confirm-btn" id="confirmBtn">Sim</button>
-        <button class="btn cancel-btn" id="cancelBtn">Cancelar</button>
+        <button class="modal-btn confirm-btn" id="confirmBtn">Sim</button>
+        <button class="modal-btn cancel-btn" id="cancelBtn">Cancelar</button>
       </div>
     </div>
   </div>
 
-  <!-- Firebase -->
+  <!-- =============== Firebase + JS =============== -->
   <script type="module">
-    // Importar Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-
-    // Lista de itens
-    const itens = [
-      { id: "item1", titulo: "Conjunto de panelas", imagem: "Panelas", link: "https://www.havan.com.br/jogo-de-panelas-sicilia-5-pecas-tramontina-cinza/p" },
-      { id: "item2", titulo: "Talheres", imagem: "Talheres" },
-      { id: "item3", titulo: "Prensa francesa", imagem: "Café", link: "https://www.havan.com.br/cafeteira-francesa-de-prensa-hauskraft-600ml-inox/p" },
-      { id: "item4", titulo: "Kit churrasco", imagem: "Churrasco", link: "https://www.magazineluiza.com.br/kit-churrasco-tramontina-10239753-3-pecas/p/238299100" },
-      { id: "item5", titulo: "Espetos para churrasqueira", imagem: "Espetos" },
-      { id: "item6", titulo: "Grelha para churrasqueira", imagem: "Grelha" },
-      { id: "item7", titulo: "Dosador Duplo e Colher bailarina", imagem: "Dosador" },
-      { id: "item8", titulo: "Balde de gelo com pegador", imagem: "Balde" },
-      { id: "item9", titulo: "Pratos", imagem: "Pratos" },
-      { id: "item10", titulo: "Bowls", imagem: "Bowls" },
-      { id: "item11", titulo: "Xícaras", imagem: "Xícaras" },
-      { id: "item12", titulo: "Potes", imagem: "Potes" },
-      { id: "item13", titulo: "Jogo americano", imagem: "Mesa" },
-      { id: "item14", titulo: "Centrífuga de salada", imagem: "Centrífuga", link: "https://www.angeloni.com.br/eletro/centrifuga-para-salada-acasa-4024412/p?idsku=543" },
-      { id: "item15", titulo: "Sanduicheira", imagem: "Sanduicheira", link: "https://www.havan.com.br/sanduicheira-eletrica-cadence-click-san400/p" },
-      { id: "item16", titulo: "Air Fryer", imagem: "Air Fryer", link: "https://www.casasbahia.com.br/fritadeira-eletrica-sem-oleo-air-fry-philco-oven-pfr2200p-12l-preta/p/55020322" },
-      { id: "item17", titulo: "Liquidificador", imagem: "Liquidificador" },
-      { id: "item18", titulo: "Mix para triturar alimentos", imagem: "Mixer", link: "https://www.amazon.com.br/Mixer-velocidades-Bmx400-Preto-Britânia/dp/B097KQWJKZ" },
-      { id: "item19", titulo: "Cortina voil porta janela", imagem: "Cortina" },
-      { id: "item20", titulo: "Quadros/decoração parede", imagem: "Quadros" },
-      { id: "item21", titulo: "Decoração para sala", imagem: "Decoração" },
-      { id: "item22", titulo: "Escada de alumínio 3 degraus", imagem: "Escada", link: "https://www.koerich.com.br/p/escada-de-aluminio-3-degraus-5101-mor/3868800" },
-      { id: "item23", titulo: "Potes herméticos", imagem: "Potes", link: "https://shopee.com.br/Kit-Potes-Herméticos-Acrílico-Empilháveis-Quadrado-Resistente-Cozinha-Dispensa-i.318621368.14910433557" },
-      { id: "item24", titulo: "Assadeira de vidro", imagem: "Assadeira" }
-    ];
-
-    // Elementos do DOM
-    const itemGrid = document.getElementById('itemGrid');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const errorMessage = document.getElementById('errorMessage');
-    const confirmModal = document.getElementById('confirmModal');
-    const modalText = document.getElementById('modalText');
-    const confirmBtn = document.getElementById('confirmBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
+    // Timer de carregamento para timeout
+    const loadingTimeout = setTimeout(() => {
+      document.getElementById('loadingError').style.display = 'block';
+    }, 15000); // 15 segundos para timeout
     
-    // Variáveis de estado
-    let currentCheckbox = null;
-    let usingLocalStorage = false;
-    let db = null;
+    /* 1 ▸ imports */
+    try {
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js");
+      const { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } = 
+        await import("https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js");
     
-    // Chave para o localStorage
-    const localStorageKey = 'chaCasaNova_escolhas';
-    
-    // Configuração do Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyBthvOflM2Vge4Q2Sc-kJTQ81OA0Zw7i7I",
-      authDomain: "chacasanova-dbc8d.firebaseapp.com",
-      projectId: "chacasanova-dbc8d",
-      storageBucket: "chacasanova-dbc8d.appspot.com",
-      messagingSenderId: "332754318600",
-      appId: "1:332754318600:web:22d8ac2c56fc5e52d668bd",
-      measurementId: "G-TLP3P8XE8P"
-    };
-    
-    // Iniciar a aplicação
-    iniciarAplicacao();
-    
-    // Função principal
-    async function iniciarAplicacao() {
+      // Variáveis para o modo de fallback
+      let usingLocalStorage = false;
+      const localStorageKey = 'chaCasaNova_escolhas';
+      
+      // Mostrar loading
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const mainError = document.getElementById('mainError');
+      
+      /* 2 ▸ config */
+      const firebaseConfig = {
+        apiKey: "AIzaSyBthvOflM2Vge4Q2Sc-kJTQ81OA0Zw7i7I",
+        authDomain: "chacasanova-dbc8d.firebaseapp.com",
+        projectId: "chacasanova-dbc8d",
+        storageBucket: "chacasanova-dbc8d.appspot.com",
+        messagingSenderId: "332754318600",
+        appId: "1:332754318600:web:22d8ac2c56fc5e52d668bd",
+        measurementId: "G-TLP3P8XE8P"
+      };
+      
       try {
-        // Inicializar Firebase
+        console.log("Inicializando Firebase...");
         const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
+        const db = getFirestore(app);
+        console.log("Firebase inicializado com sucesso!");
         
-        // Verificar se há conexão com Firebase
-        const testDoc = doc(db, "presentes", "test");
-        await getDoc(testDoc);
-        
-        console.log("Firebase conectado com sucesso!");
-      } catch (error) {
-        console.error("Erro ao conectar com Firebase:", error);
-        usingLocalStorage = true;
-        errorMessage.style.display = 'block';
-      }
-      
-      // Criar cards para todos os itens
-      criarCards();
-      
-      // Configurar eventos do modal
-      configurarModal();
-      
-      // Esconder loading
-      setTimeout(() => {
-        loadingOverlay.style.display = 'none';
-      }, 500);
-    }
-    
-    // Criar cards
-    function criarCards() {
-      itens.forEach(item => {
-        // Criar card
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.id = item.id;
-        
-        // Conteúdo do card
-        const btnReferencia = item.link ? 
-          `<a href="${item.link}" target="_blank" class="btn">Ver referência</a>` : 
-          '';
-        
-        card.innerHTML = `
-          <div class="card-img">${item.imagem}</div>
-          <div class="card-content">
-            <h3 class="card-title">${item.titulo}</h3>
-            <div class="item-status">Item já escolhido</div>
-            <div class="card-footer">
-              ${btnReferencia}
-              <div class="checkbox-wrapper">
-                <input type="checkbox" class="custom-checkbox" id="${item.id}" />
-                <label for="${item.id}" class="checkbox-label">Escolher item</label>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        // Adicionar card ao grid
-        itemGrid.appendChild(card);
-        
-        // Configurar checkbox
-        const checkbox = document.getElementById(item.id);
-        checkbox.addEventListener('click', (e) => {
-          e.preventDefault();
-          
-          if (checkbox.checked) {
-            return; // Item já escolhido
-          }
-          
-          abrirModal(checkbox, item.titulo);
+        // Tentar inicializar o app com timeout
+        const initPromise = inicializarPagina(db).catch(error => {
+          console.error("Erro ao inicializar página:", error);
+          throw error;
         });
         
-        // Escutar mudanças no Firebase ou carregar do localStorage
-        if (!usingLocalStorage) {
-          escutarMudancasFirebase(item.id, checkbox);
-        } else {
-          const escolhasLocais = getEscolhasLocais();
-          if (escolhasLocais[item.id]) {
-            atualizarAparenciaItem(checkbox, true);
+        // Adicionar um timeout para não ficar esperando infinitamente
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Timeout ao inicializar")), 10000);
+        });
+        
+        await Promise.race([initPromise, timeoutPromise]);
+        
+        // Se chegou aqui, foi bem-sucedido
+        clearTimeout(loadingTimeout);
+        loadingOverlay.style.display = 'none';
+        
+      } catch (error) {
+        // Usar localStorage como fallback
+        console.error("Erro ao inicializar Firebase:", error);
+        clearTimeout(loadingTimeout);
+        usingLocalStorage = true;
+        
+        // Exibir mensagem de erro
+        mainError.style.display = 'block';
+        loadingOverlay.style.display = 'none';
+        
+        // Inicializar modo offline
+        inicializarModoOffline();
+      }
+      
+      // Função para inicializar modo offline (fallback para localStorage)
+      function inicializarModoOffline() {
+        console.log("Iniciando em modo offline com localStorage");
+        
+        // Carregar escolhas salvas no localStorage
+        let escolhasLocais = {};
+        try {
+          const saved = localStorage.getItem(localStorageKey);
+          if (saved) {
+            escolhasLocais = JSON.parse(saved);
           }
+        } catch (e) {
+          console.error("Erro ao ler localStorage:", e);
         }
-      });
-    }
-    
-    // Escutar mudanças no Firebase
-    function escutarMudancasFirebase(id, checkbox) {
-      onSnapshot(
-        doc(db, "presentes", id),
-        (snap) => {
-          const escolhido = snap.exists() && snap.data()?.escolhido === true;
-          atualizarAparenciaItem(checkbox, escolhido);
-        },
-        (error) => {
-          console.error(`Erro ao escutar item ${id}:`, error);
+        
+        // Configurar checkboxes baseado no localStorage
+        document.querySelectorAll(".custom-checkbox").forEach(cb => {
+          const id = cb.id;
+          const escolhido = !!escolhasLocais[id];
           
-          // Tentar localStorage como fallback
-          if (!usingLocalStorage) {
-            usingLocalStorage = true;
-            errorMessage.style.display = 'block';
+          // Aplicar visual
+          cb.checked = escolhido;
+          updateItemAppearanceOffline(cb, escolhido);
+          
+          // Adicionar evento de clique
+          cb.addEventListener("click", e => {
+            e.preventDefault();
             
-            // Verificar se o item está no localStorage
-            const escolhasLocais = getEscolhasLocais();
-            if (escolhasLocais[id]) {
-              atualizarAparenciaItem(checkbox, true);
-            }
-          }
+            if (cb.checked) return; // já escolhido
+            
+            const titleElement = cb.closest(".card").querySelector(".card-title");
+            const name = titleElement ? titleElement.textContent : "item desconhecido";
+            
+            // Abrir modal
+            openModalOffline(cb, name);
+          });
+        });
+        
+        // Configurar modal para modo offline
+        const modalOverlay = document.getElementById("confirmModal");
+        const modalText = document.getElementById("modalText");
+        const confirmBtn = document.getElementById("confirmBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        let currentCheckbox = null;
+        
+        function openModalOffline(cb, name) {
+          currentCheckbox = cb;
+          modalText.textContent = `Você optou por ${name}. Você confirma?`;
+          modalOverlay.classList.add("active");
         }
-      );
-    }
-    
-    // Abrir modal
-    function abrirModal(checkbox, titulo) {
-      currentCheckbox = checkbox;
-      modalText.textContent = `Você optou por ${titulo}. Você confirma?`;
-      confirmModal.classList.add('active');
-    }
-    
-    // Configurar modal
-    function configurarModal() {
-      confirmBtn.addEventListener('click', async () => {
-        if (currentCheckbox) {
-          const id = currentCheckbox.id;
-          
-          if (!usingLocalStorage) {
-            try {
-              // Verificar se já está escolhido
-              const docRef = doc(db, "presentes", id);
-              const docSnap = await getDoc(docRef);
-              
-              if (docSnap.exists() && docSnap.data().escolhido === true) {
-                alert("Este item já foi escolhido por outra pessoa!");
-                fecharModal();
-                return;
-              }
-              
-              // Salvar no Firebase
-              await setDoc(docRef, { 
-                escolhido: true,
-                timestamp: new Date().toISOString() 
-              });
-              
-              console.log(`Item ${id} escolhido com sucesso!`);
-            } catch (error) {
-              console.error(`Erro ao gravar escolha para item ${id}:`, error);
-              
-              // Usar localStorage como fallback
-              usingLocalStorage = true;
-              errorMessage.style.display = 'block';
-              
-              // Salvar no localStorage
-              const escolhasLocais = getEscolhasLocais();
-              escolhasLocais[id] = true;
-              localStorage.setItem(localStorageKey, JSON.stringify(escolhasLocais));
-              
-              // Atualizar aparência
-              atualizarAparenciaItem(currentCheckbox, true);
-            }
-          } else {
+        
+        function closeModalOffline() {
+          modalOverlay.classList.remove("active");
+          if (currentCheckbox) currentCheckbox.checked = false;
+          currentCheckbox = null;
+        }
+        
+        confirmBtn.addEventListener("click", () => {
+          if (currentCheckbox) {
+            const id = currentCheckbox.id;
+            
             // Salvar no localStorage
-            const escolhasLocais = getEscolhasLocais();
             escolhasLocais[id] = true;
             localStorage.setItem(localStorageKey, JSON.stringify(escolhasLocais));
             
-            // Atualizar aparência
-            atualizarAparenciaItem(currentCheckbox, true);
+            // Atualizar UI
+            currentCheckbox.checked = true;
+            updateItemAppearanceOffline(currentCheckbox, true);
+            closeModalOffline();
+          }
+        });
+        
+        cancelBtn.addEventListener("click", closeModalOffline);
+      }
+      
+      // Função auxiliar para atualizar aparência no modo offline
+      function updateItemAppearanceOffline(cb, selected) {
+        const card = cb.closest(".card");
+        const title = card.querySelector(".card-title");
+        const status = card.querySelector(".item-status") || document.createElement("div");
+        
+        if (!card.querySelector(".item-status")) {
+          status.classList.add("item-status");
+          status.textContent = "Item já escolhido";
+          card.querySelector(".card-content").appendChild(status);
+        }
+        
+        const wrap = card.querySelector(".checkbox-wrapper");
+        
+        if (selected) {
+          title.classList.add("selected");
+          status.classList.add("selected");
+          wrap.style.display = "none";
+        } else {
+          title.classList.remove("selected");
+          status.classList.remove("selected");
+          wrap.style.display = "flex";
+        }
+      }
+
+      // Função principal de inicialização com Firebase
+      async function inicializarPagina(db) {
+        /* 3 ▸ funções de apoio */
+        function updateItemAppearance(cb, selected) {
+          const card = cb.closest(".card");
+          const title = card.querySelector(".card-title");
+          const status = card.querySelector(".item-status") || document.createElement("div");
+          
+          if (!card.querySelector(".item-status")) {
+            status.classList.add("item-status");
+            status.textContent = "Item já escolhido";
+            card.querySelector(".card-content").appendChild(status);
           }
           
-          fecharModal();
+          const wrap = card.querySelector(".checkbox-wrapper");
+          
+          if (selected) {
+            title.classList.add("selected");
+            status.classList.add("selected");
+            wrap.style.display = "none";
+          } else {
+            title.classList.remove("selected");
+            status.classList.remove("selected");
+            wrap.style.display = "flex";
+          }
         }
-      });
-      
-      cancelBtn.addEventListener('click', fecharModal);
-    }
-    
-    // Fechar modal
-    function fecharModal() {
-      confirmModal.classList.remove('active');
-      currentCheckbox = null;
-    }
-    
-    // Carregar escolhas do localStorage
-    function getEscolhasLocais() {
-      try {
-        const salvo = localStorage.getItem(localStorageKey);
-        return salvo ? JSON.parse(salvo) : {};
-      } catch (e) {
-        console.error('Erro ao ler localStorage:', e);
-        return {};
+
+        // Função para gravar a escolha no Firestore
+        async function gravarEscolha(id) {
+          try {
+            console.log(`Tentando gravar escolha para item ${id}...`);
+            
+            // Verifica se o item já está escolhido
+            const docRef = doc(db, "presentes", id);
+            const docSnap = await getDoc(docRef);
+            
+            if (docSnap.exists() && docSnap.data().escolhido === true) {
+              alert("Este item já foi escolhido por outra pessoa!");
+              return false;
+            }
+            
+            // Se não estiver escolhido, grava a escolha
+            await setDoc(docRef, { 
+              escolhido: true,
+              timestamp: new Date().toISOString() 
+            });
+            console.log(`Item ${id} escolhido com sucesso!`);
+            return true;
+          } catch (error) {
+            console.error(`Erro ao gravar escolha para item ${id}:`, error);
+            
+            // Se falhar, tentar registrar localmente
+            if (!usingLocalStorage) {
+              usingLocalStorage = true;
+              mainError.style.display = 'block';
+              
+              try {
+                let escolhasLocais = {};
+                const saved = localStorage.getItem(localStorageKey);
+                if (saved) {
+                  escolhasLocais = JSON.parse(saved);
+                }
+                
+                escolhasLocais[id] = true;
+                localStorage.setItem(localStorageKey, JSON.stringify(escolhasLocais));
+                return true;
+              } catch (e) {
+                console.error("Erro ao salvar no localStorage:", e);
+              }
+            }
+            
+            alert("Ocorreu um erro ao escolher o item. Tente novamente.");
+            return false;
+          }
+        }
+
+        // Mapa de estado local para cada item
+        const itemState = new Map();
+
+        // Função para escutar mudanças em tempo real
+        function escutarItem(id, cb) {
+          console.log(`Configurando listener para item ${id}...`);
+          
+          // Definir estado inicial como não escolhido
+          itemState.set(id, false);
+          
+          // Testar conexão primeiro
+          return onSnapshot(
+            doc(db, "presentes", id),
+            (snap) => {
+              // Verificar se o documento existe E tem a propriedade escolhido como true
+              const marcado = snap.exists() && snap.data()?.escolhido === true;
+              console.log(`Atualização recebida para item ${id}:`, snap.data(), `Escolhido: ${marcado}`);
+              
+              // Atualizar o estado local
+              itemState.set(id, marcado);
+              
+              // Atualizar a UI
+              cb.checked = marcado;
+              updateItemAppearance(cb, marcado);
+            },
+            (error) => {
+              console.error(`Erro ao escutar item ${id}:`, error);
+              
+              // Se falhar a escuta, pode ser problema de permissões
+              if (!usingLocalStorage) {
+                usingLocalStorage = true;
+                mainError.style.display = 'block';
+                inicializarModoOffline();
+              }
+            }
+          );
+        }
+
+        /* 4 ▸ lógica da página */
+        console.log("Configurando elementos da página...");
+        
+        /* variáveis do modal */
+        const modalOverlay = document.getElementById("confirmModal");
+        const modalText = document.getElementById("modalText");
+        const confirmBtn = document.getElementById("confirmBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        let currentCheckbox = null;
+
+        if (!modalOverlay || !modalText || !confirmBtn || !cancelBtn) {
+          console.error("Elementos do modal não encontrados!");
+          throw new Error("Elementos do modal não encontrados");
+        }
+
+        /* adiciona status labels aos cards */
+        document.querySelectorAll(".card").forEach(card => {
+          if (!card.querySelector(".item-status")) {
+            const st = document.createElement("div");
+            st.classList.add("item-status");
+            st.textContent = "Item já escolhido";
+            card.querySelector(".card-content").appendChild(st);
+          }
+        });
+
+        /* funções do modal */
+        const openModal = (cb, name) => {
+          console.log(`Abrindo modal para item: ${name}`);
+          currentCheckbox = cb;
+          modalText.textContent = `Você optou por ${name}. Você confirma?`;
+          modalOverlay.classList.add("active");
+        };
+        
+        const closeModal = () => {
+          console.log("Fechando modal");
+          modalOverlay.classList.remove("active");
+          if (currentCheckbox) currentCheckbox.checked = false;
+          currentCheckbox = null;
+        };
+
+        confirmBtn.addEventListener("click", async () => {
+          console.log("Botão de confirmar clicado");
+          if (currentCheckbox) {
+            console.log(`Confirmando escolha do item: ${currentCheckbox.id}`);
+            const success = await gravarEscolha(currentCheckbox.id);
+            if (success) {
+              closeModal();
+            }
+          }
+        });
+        
+        cancelBtn.addEventListener("click", () => {
+          console.log("Botão de cancelar clicado");
+          closeModal();
+        });
+
+        /* listeners de cada checkbox */
+        const checkboxes = document.querySelectorAll(".custom-checkbox");
+        console.log(`Encontrados ${checkboxes.length} checkboxes`);
+        
+        const listeners = [];
+        
+        // Configurar todos os listeners e esperar até que estejam prontos
+        const setupPromises = [];
+        
+        checkboxes.forEach(cb => {
+          // Inicializa o estado de cada item e armazena o listener
+          const listenerId = cb.id;
+          
+          // Adiciona ao array de promessas
+          const promise = new Promise(resolve => {
+            const unsubscribe = escutarItem(listenerId, cb);
+            listeners.push(unsubscribe);
+            
+            // Aguarda um curto período para garantir que o listener foi configurado
+            setTimeout(resolve, 100);
+          });
+          
+          setupPromises.push(promise);
+          
+          // Adiciona evento de clique
+          cb.addEventListener("click", e => {
+            console.log(`Checkbox ${cb.id} clicado`);
+            e.preventDefault();
+            
+            // Verifica se o item já está escolhido no estado local
+            if (itemState.get(cb.id)) {
+              console.log(`Item ${cb.id} já está escolhido, ignorando clique`);
+              return;
+            }
+            
+            const titleElement = cb.closest(".card").querySelector(".card-title");
+            const name = titleElement ? titleElement.textContent : "item desconhecido";
+            console.log(`Usuário clicou para escolher: ${name}`);
+            openModal(cb, name);
+          });
+        });
+        
+        // Aguardar a configuração de todos os listeners
+        await Promise.all(setupPromises);
+        
+        console.log("Página inicializada com sucesso!");
       }
-    }
-    
-    // Atualizar aparência do item
-    function atualizarAparenciaItem(checkbox, escolhido) {
-      checkbox.checked = escolhido;
+    } catch (importError) {
+      console.error("Erro ao importar módulos do Firebase:", importError);
+      document.getElementById('loadingError').style.display = 'block';
       
-      const card = checkbox.closest('.card');
-      const title = card.querySelector('.card-title');
-      const status = card.querySelector('.item-status');
-      const wrapper = checkbox.closest('.checkbox-wrapper');
-      
-      if (escolhido) {
-        title.classList.add('selected');
-        status.classList.add('selected');
-      } else {
-        title.classList.remove('selected');
-        status.classList.remove('selected');
-      }
+      // Após 5 segundos, redirecionar para uma versão estática
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').innerHTML = '<p>Não foi possível carregar o Firebase. Redirecionando para versão simplificada.</p>';
+      }, 5000);
     }
   </script>
-</body>
-</html>
