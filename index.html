@@ -120,18 +120,13 @@
       color: #999;
     }
     
-    .card-description {
-      font-size: 0.9rem;
-      color: #888;
-      margin-bottom: 15px;
-    }
-    
     .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+      margin-top: 15px;
     }
     
     .btn {
@@ -143,15 +138,53 @@
       text-decoration: none;
       font-size: 0.9rem;
       transition: background 0.3s;
-      border: none;
-      cursor: pointer;
     }
     
     .btn:hover {
       background: #555;
     }
     
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .custom-checkbox {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #6b696a;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      transition: 0.3s;
+    }
+    
+    .custom-checkbox:checked {
+      background: #a3b899;
+      border-color: #a3b899;
+    }
+    
+    .custom-checkbox:checked::after {
+      content: '✓';
+      color: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .checkbox-label {
+      font-size: 0.8rem;
+      color: #888;
+    }
+    
     .item-status {
+      position: absolute;
+      top: 12px;
+      right: 15px;
       color: #a3b899;
       font-weight: 500;
       font-size: 0.9rem;
@@ -261,6 +294,17 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    
+    .error-message {
+      color: #d9534f;
+      padding: 1rem;
+      margin: 1rem 0;
+      border: 1px solid #d9534f;
+      border-radius: 4px;
+      background-color: #f9f2f4;
+      text-align: center;
+      display: none;
+    }
   </style>
 </head>
 
@@ -291,10 +335,13 @@
       </div>
     </header>
 
-    <!-- Lista de itens -->
-    <div class="card-grid" id="itemGrid">
-      <!-- Os cards serão adicionados via JavaScript -->
+    <!-- Mensagem de erro -->
+    <div id="errorMessage" class="error-message">
+      Houve um problema ao conectar com o banco de dados. Suas escolhas serão salvas localmente.
     </div>
+
+    <!-- Lista de itens -->
+    <div class="card-grid" id="itemGrid"></div>
 
     <footer>
       <p>Muito obrigado pelo carinho e presença!</p>
@@ -313,187 +360,88 @@
     </div>
   </div>
 
-  <!-- Script principal -->
-  <script>
-    // Lista de itens com seus detalhes
+  <!-- Firebase -->
+  <script type="module">
+    // Importar Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+    // Lista de itens
     const itens = [
-      {
-        id: "item1",
-        titulo: "Conjunto de panelas Tramontina",
-        descricao: "",
-        imagem: "Panelas",
-        link: "https://www.havan.com.br/jogo-de-panelas-sicilia-5-pecas-tramontina-cinza/p"
-      },
-      {
-        id: "item2",
-        titulo: "Talheres - Preto ou Inox",
-        descricao: "",
-        imagem: "Talheres"
-      },
-      {
-        id: "item3",
-        titulo: "Prensa francesa",
-        descricao: "",
-        imagem: "Café",
-        link: "https://www.havan.com.br/cafeteira-francesa-de-prensa-hauskraft-600ml-inox/p"
-      },
-      {
-        id: "item4",
-        titulo: "Kit churrasco",
-        descricao: "",
-        imagem: "Churrasco",
-        link: "https://www.magazineluiza.com.br/kit-churrasco-tramontina-10239753-3-pecas/p/238299100"
-      },
-      {
-        id: "item5",
-        titulo: "Espetos para churrasqueira",
-        descricao: "",
-        imagem: "Espetos"
-      },
-      {
-        id: "item6",
-        titulo: "Grelha para churrasqueira",
-        descricao: "",
-        imagem: "Grelha"
-      },
-      {
-        id: "item7",
-        titulo: "Dosador Duplo e Colher bailarina",
-        descricao: "",
-        imagem: "Dosador"
-      },
-      {
-        id: "item8",
-        titulo: "Balde de gelo com pegador",
-        descricao: "",
-        imagem: "Balde"
-      },
-      {
-        id: "item9",
-        titulo: "Pratos",
-        descricao: "Rasos e fundos",
-        imagem: "Pratos"
-      },
-      {
-        id: "item10",
-        titulo: "Bowls",
-        descricao: "Tigelas para servir alimentos",
-        imagem: "Bowls"
-      },
-      {
-        id: "item11",
-        titulo: "Xícaras",
-        descricao: "",
-        imagem: "Xícaras"
-      },
-      {
-        id: "item12",
-        titulo: "Potes",
-        descricao: "",
-        imagem: "Potes"
-      },
-      {
-        id: "item13",
-        titulo: "Jogo americano",
-        descricao: "",
-        imagem: "Mesa"
-      },
-      {
-        id: "item14",
-        titulo: "Centrífuga de salada",
-        descricao: "",
-        imagem: "Centrífuga",
-        link: "https://www.angeloni.com.br/eletro/centrifuga-para-salada-acasa-4024412/p?idsku=543"
-      },
-      {
-        id: "item15",
-        titulo: "Sanduicheira",
-        descricao: "",
-        imagem: "Sanduicheira",
-        link: "https://www.havan.com.br/sanduicheira-eletrica-cadence-click-san400/p"
-      },
-      {
-        id: "item16",
-        titulo: "Air Fryer",
-        descricao: "Modelo Philco",
-        imagem: "Air Fryer",
-        link: "https://www.casasbahia.com.br/fritadeira-eletrica-sem-oleo-air-fry-philco-oven-pfr2200p-12l-preta/p/55020322"
-      },
-      {
-        id: "item17",
-        titulo: "Liquidificador",
-        descricao: "",
-        imagem: "Liquidificador"
-      },
-      {
-        id: "item18",
-        titulo: "Mix para triturar alimentos",
-        descricao: "",
-        imagem: "Mixer",
-        link: "https://www.amazon.com.br/Mixer-velocidades-Bmx400-Preto-Britânia/dp/B097KQWJKZ"
-      },
-      {
-        id: "item19",
-        titulo: "Cortina voil porta janela",
-        descricao: "",
-        imagem: "Cortina"
-      },
-      {
-        id: "item20",
-        titulo: "Quadros/decoração parede",
-        descricao: "",
-        imagem: "Quadros"
-      },
-      {
-        id: "item21",
-        titulo: "Decoração para sala",
-        descricao: "",
-        imagem: "Decoração"
-      },
-      {
-        id: "item22",
-        titulo: "Escada de alumínio 3 degraus",
-        descricao: "",
-        imagem: "Escada",
-        link: "https://www.koerich.com.br/p/escada-de-aluminio-3-degraus-5101-mor/3868800"
-      },
-      {
-        id: "item23",
-        titulo: "Potes herméticos",
-        descricao: "",
-        imagem: "Potes",
-        link: "https://shopee.com.br/Kit-Potes-Herméticos-Acrílico-Empilháveis-Quadrado-Resistente-Cozinha-Dispensa-i.318621368.14910433557"
-      },
-      {
-        id: "item24",
-        titulo: "Assadeira de vidro",
-        descricao: "Marinex",
-        imagem: "Assadeira"
-      }
+      { id: "item1", titulo: "Conjunto de panelas", imagem: "Panelas", link: "https://www.havan.com.br/jogo-de-panelas-sicilia-5-pecas-tramontina-cinza/p" },
+      { id: "item2", titulo: "Talheres", imagem: "Talheres" },
+      { id: "item3", titulo: "Prensa francesa", imagem: "Café", link: "https://www.havan.com.br/cafeteira-francesa-de-prensa-hauskraft-600ml-inox/p" },
+      { id: "item4", titulo: "Kit churrasco", imagem: "Churrasco", link: "https://www.magazineluiza.com.br/kit-churrasco-tramontina-10239753-3-pecas/p/238299100" },
+      { id: "item5", titulo: "Espetos para churrasqueira", imagem: "Espetos" },
+      { id: "item6", titulo: "Grelha para churrasqueira", imagem: "Grelha" },
+      { id: "item7", titulo: "Dosador Duplo e Colher bailarina", imagem: "Dosador" },
+      { id: "item8", titulo: "Balde de gelo com pegador", imagem: "Balde" },
+      { id: "item9", titulo: "Pratos", imagem: "Pratos" },
+      { id: "item10", titulo: "Bowls", imagem: "Bowls" },
+      { id: "item11", titulo: "Xícaras", imagem: "Xícaras" },
+      { id: "item12", titulo: "Potes", imagem: "Potes" },
+      { id: "item13", titulo: "Jogo americano", imagem: "Mesa" },
+      { id: "item14", titulo: "Centrífuga de salada", imagem: "Centrífuga", link: "https://www.angeloni.com.br/eletro/centrifuga-para-salada-acasa-4024412/p?idsku=543" },
+      { id: "item15", titulo: "Sanduicheira", imagem: "Sanduicheira", link: "https://www.havan.com.br/sanduicheira-eletrica-cadence-click-san400/p" },
+      { id: "item16", titulo: "Air Fryer", imagem: "Air Fryer", link: "https://www.casasbahia.com.br/fritadeira-eletrica-sem-oleo-air-fry-philco-oven-pfr2200p-12l-preta/p/55020322" },
+      { id: "item17", titulo: "Liquidificador", imagem: "Liquidificador" },
+      { id: "item18", titulo: "Mix para triturar alimentos", imagem: "Mixer", link: "https://www.amazon.com.br/Mixer-velocidades-Bmx400-Preto-Britânia/dp/B097KQWJKZ" },
+      { id: "item19", titulo: "Cortina voil porta janela", imagem: "Cortina" },
+      { id: "item20", titulo: "Quadros/decoração parede", imagem: "Quadros" },
+      { id: "item21", titulo: "Decoração para sala", imagem: "Decoração" },
+      { id: "item22", titulo: "Escada de alumínio 3 degraus", imagem: "Escada", link: "https://www.koerich.com.br/p/escada-de-aluminio-3-degraus-5101-mor/3868800" },
+      { id: "item23", titulo: "Potes herméticos", imagem: "Potes", link: "https://shopee.com.br/Kit-Potes-Herméticos-Acrílico-Empilháveis-Quadrado-Resistente-Cozinha-Dispensa-i.318621368.14910433557" },
+      { id: "item24", titulo: "Assadeira de vidro", imagem: "Assadeira" }
     ];
 
     // Elementos do DOM
     const itemGrid = document.getElementById('itemGrid');
     const loadingOverlay = document.getElementById('loadingOverlay');
+    const errorMessage = document.getElementById('errorMessage');
     const confirmModal = document.getElementById('confirmModal');
     const modalText = document.getElementById('modalText');
     const confirmBtn = document.getElementById('confirmBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     
     // Variáveis de estado
-    let currentItem = null;
-    const escolhidos = {};
+    let currentCheckbox = null;
+    let usingLocalStorage = false;
+    let db = null;
     
     // Chave para o localStorage
     const localStorageKey = 'chaCasaNova_escolhas';
     
-    // Inicializar a aplicação
-    document.addEventListener('DOMContentLoaded', inicializarAplicacao);
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBthvOflM2Vge4Q2Sc-kJTQ81OA0Zw7i7I",
+      authDomain: "chacasanova-dbc8d.firebaseapp.com",
+      projectId: "chacasanova-dbc8d",
+      storageBucket: "chacasanova-dbc8d.appspot.com",
+      messagingSenderId: "332754318600",
+      appId: "1:332754318600:web:22d8ac2c56fc5e52d668bd",
+      measurementId: "G-TLP3P8XE8P"
+    };
     
-    // Função principal de inicialização
-    function inicializarAplicacao() {
-      // Carregar escolhas do localStorage
-      carregarEscolhasLocais();
+    // Iniciar a aplicação
+    iniciarAplicacao();
+    
+    // Função principal
+    async function iniciarAplicacao() {
+      try {
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        
+        // Verificar se há conexão com Firebase
+        const testDoc = doc(db, "presentes", "test");
+        await getDoc(testDoc);
+        
+        console.log("Firebase conectado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao conectar com Firebase:", error);
+        usingLocalStorage = true;
+        errorMessage.style.display = 'block';
+      }
       
       // Criar cards para todos os itens
       criarCards();
@@ -501,89 +449,150 @@
       // Configurar eventos do modal
       configurarModal();
       
-      // Esconder o loading
+      // Esconder loading
       setTimeout(() => {
         loadingOverlay.style.display = 'none';
       }, 500);
     }
     
-    // Carregar escolhas salvas
-    function carregarEscolhasLocais() {
-      try {
-        const salvo = localStorage.getItem(localStorageKey);
-        if (salvo) {
-          const dados = JSON.parse(salvo);
-          Object.assign(escolhidos, dados);
-        }
-      } catch (e) {
-        console.error('Erro ao carregar dados locais:', e);
-      }
-    }
-    
-    // Salvar escolha no localStorage
-    function salvarEscolha(id) {
-      escolhidos[id] = true;
-      try {
-        localStorage.setItem(localStorageKey, JSON.stringify(escolhidos));
-      } catch (e) {
-        console.error('Erro ao salvar escolha:', e);
-      }
-    }
-    
-    // Criar cards para todos os itens
+    // Criar cards
     function criarCards() {
       itens.forEach(item => {
-        const cardHTML = criarCardHTML(item);
-        itemGrid.insertAdjacentHTML('beforeend', cardHTML);
+        // Criar card
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.id = item.id;
         
-        // Adicionar evento de clique
+        // Conteúdo do card
+        const btnReferencia = item.link ? 
+          `<a href="${item.link}" target="_blank" class="btn">Ver referência</a>` : 
+          '';
+        
+        card.innerHTML = `
+          <div class="card-img">${item.imagem}</div>
+          <div class="card-content">
+            <h3 class="card-title">${item.titulo}</h3>
+            <div class="item-status">Item já escolhido</div>
+            <div class="card-footer">
+              ${btnReferencia}
+              <div class="checkbox-wrapper">
+                <input type="checkbox" class="custom-checkbox" id="${item.id}" />
+                <label for="${item.id}" class="checkbox-label">Escolher item</label>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Adicionar card ao grid
+        itemGrid.appendChild(card);
+        
+        // Configurar checkbox
         const checkbox = document.getElementById(item.id);
         checkbox.addEventListener('click', (e) => {
           e.preventDefault();
           
-          if (checkbox.classList.contains('selecionado')) {
+          if (checkbox.checked) {
             return; // Item já escolhido
           }
           
-          abrirModal(item);
+          abrirModal(checkbox, item.titulo);
         });
         
-        // Atualizar estado inicial
-        if (escolhidos[item.id]) {
-          marcarItemComoEscolhido(item.id);
+        // Escutar mudanças no Firebase ou carregar do localStorage
+        if (!usingLocalStorage) {
+          escutarMudancasFirebase(item.id, checkbox);
+        } else {
+          const escolhasLocais = getEscolhasLocais();
+          if (escolhasLocais[item.id]) {
+            atualizarAparenciaItem(checkbox, true);
+          }
         }
       });
     }
     
-    // Criar HTML para um card
-    function criarCardHTML(item) {
-      const btnReferencia = item.link ? 
-        `<a href="${item.link}" target="_blank" class="btn">Ver referência</a>` : 
-        '';
-      
-      return `
-        <div class="card" data-id="${item.id}">
-          <div class="card-img">${item.imagem}</div>
-          <div class="card-content">
-            <h3 class="card-title">${item.titulo}</h3>
-            <p class="card-description">${item.descricao || ''}</p>
-            <div class="item-status">Item já escolhido</div>
-            <div class="card-footer">
-              ${btnReferencia}
-              <button class="btn" id="${item.id}">Escolher item</button>
-            </div>
-          </div>
-        </div>
-      `;
+    // Escutar mudanças no Firebase
+    function escutarMudancasFirebase(id, checkbox) {
+      onSnapshot(
+        doc(db, "presentes", id),
+        (snap) => {
+          const escolhido = snap.exists() && snap.data()?.escolhido === true;
+          atualizarAparenciaItem(checkbox, escolhido);
+        },
+        (error) => {
+          console.error(`Erro ao escutar item ${id}:`, error);
+          
+          // Tentar localStorage como fallback
+          if (!usingLocalStorage) {
+            usingLocalStorage = true;
+            errorMessage.style.display = 'block';
+            
+            // Verificar se o item está no localStorage
+            const escolhasLocais = getEscolhasLocais();
+            if (escolhasLocais[id]) {
+              atualizarAparenciaItem(checkbox, true);
+            }
+          }
+        }
+      );
     }
     
-    // Configurar eventos do modal
+    // Abrir modal
+    function abrirModal(checkbox, titulo) {
+      currentCheckbox = checkbox;
+      modalText.textContent = `Você optou por ${titulo}. Você confirma?`;
+      confirmModal.classList.add('active');
+    }
+    
+    // Configurar modal
     function configurarModal() {
-      confirmBtn.addEventListener('click', () => {
-        if (currentItem) {
-          // Salvar escolha
-          salvarEscolha(currentItem.id);
-          marcarItemComoEscolhido(currentItem.id);
+      confirmBtn.addEventListener('click', async () => {
+        if (currentCheckbox) {
+          const id = currentCheckbox.id;
+          
+          if (!usingLocalStorage) {
+            try {
+              // Verificar se já está escolhido
+              const docRef = doc(db, "presentes", id);
+              const docSnap = await getDoc(docRef);
+              
+              if (docSnap.exists() && docSnap.data().escolhido === true) {
+                alert("Este item já foi escolhido por outra pessoa!");
+                fecharModal();
+                return;
+              }
+              
+              // Salvar no Firebase
+              await setDoc(docRef, { 
+                escolhido: true,
+                timestamp: new Date().toISOString() 
+              });
+              
+              console.log(`Item ${id} escolhido com sucesso!`);
+            } catch (error) {
+              console.error(`Erro ao gravar escolha para item ${id}:`, error);
+              
+              // Usar localStorage como fallback
+              usingLocalStorage = true;
+              errorMessage.style.display = 'block';
+              
+              // Salvar no localStorage
+              const escolhasLocais = getEscolhasLocais();
+              escolhasLocais[id] = true;
+              localStorage.setItem(localStorageKey, JSON.stringify(escolhasLocais));
+              
+              // Atualizar aparência
+              atualizarAparenciaItem(currentCheckbox, true);
+            }
+          } else {
+            // Salvar no localStorage
+            const escolhasLocais = getEscolhasLocais();
+            escolhasLocais[id] = true;
+            localStorage.setItem(localStorageKey, JSON.stringify(escolhasLocais));
+            
+            // Atualizar aparência
+            atualizarAparenciaItem(currentCheckbox, true);
+          }
+          
           fecharModal();
         }
       });
@@ -591,33 +600,39 @@
       cancelBtn.addEventListener('click', fecharModal);
     }
     
-    // Abrir modal de confirmação
-    function abrirModal(item) {
-      currentItem = item;
-      modalText.textContent = `Você optou por ${item.titulo}. Você confirma?`;
-      confirmModal.classList.add('active');
-    }
-    
-    // Fechar modal de confirmação
+    // Fechar modal
     function fecharModal() {
       confirmModal.classList.remove('active');
-      currentItem = null;
+      currentCheckbox = null;
     }
     
-    // Marcar item como escolhido na interface
-    function marcarItemComoEscolhido(id) {
-      const card = document.querySelector(`.card[data-id="${id}"]`);
-      if (!card) return;
+    // Carregar escolhas do localStorage
+    function getEscolhasLocais() {
+      try {
+        const salvo = localStorage.getItem(localStorageKey);
+        return salvo ? JSON.parse(salvo) : {};
+      } catch (e) {
+        console.error('Erro ao ler localStorage:', e);
+        return {};
+      }
+    }
+    
+    // Atualizar aparência do item
+    function atualizarAparenciaItem(checkbox, escolhido) {
+      checkbox.checked = escolhido;
       
-      const titulo = card.querySelector('.card-title');
+      const card = checkbox.closest('.card');
+      const title = card.querySelector('.card-title');
       const status = card.querySelector('.item-status');
-      const botao = document.getElementById(id);
+      const wrapper = checkbox.closest('.checkbox-wrapper');
       
-      titulo.classList.add('selected');
-      status.classList.add('selected');
-      botao.classList.add('selecionado');
-      botao.textContent = 'Item escolhido';
-      botao.disabled = true;
+      if (escolhido) {
+        title.classList.add('selected');
+        status.classList.add('selected');
+      } else {
+        title.classList.remove('selected');
+        status.classList.remove('selected');
+      }
     }
   </script>
 </body>
