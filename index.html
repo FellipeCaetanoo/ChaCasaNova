@@ -59,10 +59,47 @@
     .cancel-btn:hover{background:#ddd;}
 
     footer{text-align:center;margin-top:4rem;padding-top:2rem;border-top:1px solid #eee;color:#888;font-size:.9rem;}
+    
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: var(--verde-claro);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Carregando itens...</div>
+  </div>
+
   <div class="container">
     <!-- ---------- cabeçalho ---------- -->
     <header>
@@ -174,12 +211,13 @@
           </div>
         </div>
       </div>
-      <!-- Outros cards... (mantidos para economizar espaço) -->
+      <!-- Outros cards... -->
     </div>
 
     <footer><p>Muito obrigado pelo carinho e presença!</p></footer>
   </div>
 
+  <!-- Modal de confirmação -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal">
       <h3>Confirmação</h3>
@@ -197,6 +235,9 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
+    // Mostrar loading
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
     /* 2 ▸ config */
     const firebaseConfig = {
       apiKey: "AIzaSyBthvOflM2Vge4Q2Sc-kJTQ81OA0Zw7i7I",
@@ -208,22 +249,25 @@
       measurementId: "G-TLP3P8XE8P"
     };
     
-    // Inicializar Firebase
     try {
       console.log("Inicializando Firebase...");
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       console.log("Firebase inicializado com sucesso!");
       
-      // Inicializa a página quando o Firebase estiver pronto
-      inicializarPagina(db);
+      // Inicializa todos os listeners antes de esconder o loading
+      await inicializarPagina(db);
+      
+      // Esconde o loading quando tudo estiver pronto
+      loadingOverlay.style.display = 'none';
     } catch (error) {
       console.error("Erro ao inicializar Firebase:", error);
       alert("Erro ao conectar com o banco de dados. Por favor, recarregue a página.");
+      loadingOverlay.style.display = 'none';
     }
 
     // Função principal de inicialização
-    function inicializarPagina(db) {
+    async function inicializarPagina(db) {
       /* 3 ▸ funções de apoio */
       function updateItemAppearance(cb, selected) {
         const card = cb.closest(".card");
@@ -249,37 +293,10 @@
         }
       }
 
-      // Função para garantir que a coleção 'presentes' exista
-      async function garantirColecaoPresentes() {
-        try {
-          // Tenta acessar um documento na coleção para garantir que ela exista
-          const docRef = doc(db, "presentes", "item1");
-          const docSnap = await getDoc(docRef);
-          
-          // Se o documento não existir, cria a coleção com um documento inicial
-          if (!docSnap.exists()) {
-            console.log("Criando coleção 'presentes'...");
-            await setDoc(docRef, { inicializado: true });
-            console.log("Coleção 'presentes' criada com sucesso!");
-          }
-          return true;
-        } catch (error) {
-          console.error("Erro ao garantir coleção 'presentes':", error);
-          return false;
-        }
-      }
-
       // Função para gravar a escolha no Firestore
       async function gravarEscolha(id) {
         try {
           console.log(`Tentando gravar escolha para item ${id}...`);
-          
-          // Verifica se a coleção existe
-          const colecaoExiste = await garantirColecaoPresentes();
-          if (!colecaoExiste) {
-            alert("Erro ao acessar o banco de dados. Tente novamente.");
-            return false;
-          }
           
           // Verifica se o item já está escolhido
           const docRef = doc(db, "presentes", id);
@@ -304,14 +321,27 @@
         }
       }
 
+      // Mapa de estado local para cada item
+      const itemState = new Map();
+
       // Função para escutar mudanças em tempo real
       function escutarItem(id, cb) {
         console.log(`Configurando listener para item ${id}...`);
+        
+        // Definir estado inicial como não escolhido
+        itemState.set(id, false);
+        
         return onSnapshot(
           doc(db, "presentes", id),
           (snap) => {
-            console.log(`Atualização recebida para item ${id}:`, snap.data());
+            // Verificar se o documento existe E tem a propriedade escolhido como true
             const marcado = snap.exists() && snap.data()?.escolhido === true;
+            console.log(`Atualização recebida para item ${id}:`, snap.data(), `Escolhido: ${marcado}`);
+            
+            // Atualizar o estado local
+            itemState.set(id, marcado);
+            
+            // Atualizar a UI
             cb.checked = marcado;
             updateItemAppearance(cb, marcado);
           },
@@ -381,16 +411,33 @@
       const checkboxes = document.querySelectorAll(".custom-checkbox");
       console.log(`Encontrados ${checkboxes.length} checkboxes`);
       
+      const listeners = [];
+      
+      // Configurar todos os listeners e esperar até que estejam prontos
+      const setupPromises = [];
+      
       checkboxes.forEach(cb => {
-        // Inicializa estado de cada item
-        escutarItem(cb.id, cb);
+        // Inicializa o estado de cada item e armazena o listener
+        const listenerId = cb.id;
+        
+        // Adiciona ao array de promessas
+        const promise = new Promise(resolve => {
+          const unsubscribe = escutarItem(listenerId, cb);
+          listeners.push(unsubscribe);
+          
+          // Aguarda um curto período para garantir que o listener foi configurado
+          setTimeout(resolve, 100);
+        });
+        
+        setupPromises.push(promise);
         
         // Adiciona evento de clique
         cb.addEventListener("click", e => {
           console.log(`Checkbox ${cb.id} clicado`);
           e.preventDefault();
           
-          if (cb.checked) {
+          // Verifica se o item já está escolhido no estado local
+          if (itemState.get(cb.id)) {
             console.log(`Item ${cb.id} já está escolhido, ignorando clique`);
             return;
           }
@@ -401,6 +448,9 @@
           openModal(cb, name);
         });
       });
+      
+      // Aguardar a configuração de todos os listeners
+      await Promise.all(setupPromises);
       
       console.log("Página inicializada com sucesso!");
     }
